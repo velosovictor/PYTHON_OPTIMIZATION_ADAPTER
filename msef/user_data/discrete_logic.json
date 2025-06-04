@@ -1,0 +1,17 @@
+{
+  "logic_constraints": [
+    {
+      "name": "spring_logic",
+      "disjunction": [
+        {
+          "conditions": ["x <= threshold"],
+          "assignments": ["k_eff == k_high"]
+        },
+        {
+          "conditions": ["x >= threshold"],
+          "assignments": ["k_eff == k_low"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "unknown_parameters": ["y", "v"],
+  "parameters": [],
+  "additional_functions": [],
+  "equations": [
+    "diff(y(t), t) - v(t) = 0",
+    "4*diff(v(t), t) - 8*v(t) + 3*y(t) = 0"
+  ],
+  "dt_value": 0.1,
+  "final_time": 5.0,
+  "init_conditions": {
+    "y0": 2,
+    "v0": 0.5
+  },
+  "minlp_enabled": false,
+  "solver": "ipopt",
+	"solve_mode": "monolithic"
+}
