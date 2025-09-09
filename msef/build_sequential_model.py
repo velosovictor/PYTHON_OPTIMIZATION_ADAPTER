@@ -1,11 +1,9 @@
-"""
-Timewise Simulation Module
-
-This module implements a step-by-step simulation of the ODE system using a timewise
-(Sequential) approach. At each time step, a small Pyomo model is built and solved, and the solution 
-is used as the initial condition for the next step. This allows real-time parameter 
-updates and live plotting.
-"""
+# ============================================================================
+# TIMEWISE SIMULATION MODULE
+# ============================================================================
+# Implements step-by-step simulation using sequential approach
+# Builds and solves small models at each time step for real-time updates
+# Supports live plotting and parameter reloading during simulation
 
 import numpy as np
 import sympy as sp
@@ -27,7 +25,6 @@ from .extra_variables import add_extra_variables
 from .user_data.lookup import lookup_tables
 from .constraint_rules import MySymbolMap
 from .discretization import discretize_symbolic_eq
-# Import the new discrete logic module
 from .discrete_logic import add_discrete_logic_constraints
 from .postprocessing_live import package_solution_live
 from .plotting.plotting_live import plot_dataset_live

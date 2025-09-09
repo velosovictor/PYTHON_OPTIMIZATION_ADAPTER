@@ -1,34 +1,19 @@
-"""
-Postprocessing Module
+# ============================================================================
+# POSTPROCESSING MODULE
+# ============================================================================
+# Packages simulation solutions into xarray Datasets
+# Provides data structure for analysis and visualization
 
-This module provides functionality for packaging simulation solutions into xarray Datasets
-and inserting them into MongoDB for persistent storage and retrieval.
-"""
 import xarray as xr
 from pymongo import MongoClient
 
+# ============================================================================
+# SOLUTION PACKAGING FUNCTION
+# ============================================================================
 def package_solution(tau, sol_dict, dt_value, final_time, description="Results from the ODE solved with Pyomo"):
-    """
-    Packages solution variables in an xarray Dataset.
-
-    Parameters
-    ----------
-    tau : array_like
-        Time grid for the solution.
-    sol_dict : dict
-        Dictionary mapping variable names to their solution arrays.
-    dt_value : float
-        Time discretization step size.
-    final_time : float
-        The final time of the simulation.
-    description : str, optional
-        Description for the dataset.
-
-    Returns
-    -------
-    ds : xarray.Dataset
-        Dataset containing the solution variables, coordinates, and attributes.
-    """
+    # Packages solution variables in xarray Dataset
+    # Creates structured data with time coordinates and metadata
+    
     ds = xr.Dataset(
         data_vars={ var: (("time"), sol_dict[var]) for var in sol_dict },
         coords={"time": tau},

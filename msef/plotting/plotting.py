@@ -1,35 +1,32 @@
-"""
-Plotting Module
+# ============================================================================
+# PLOTTING MODULE
+# ============================================================================
+# Provides general plotting functionalities for simulation results
+# Creates subplots for each variable in the dataset
 
-This module provides general plotting functionalities for system simulations.
-"""
 import matplotlib.pyplot as plt
 
+# ============================================================================
+# DATASET PLOTTING FUNCTION
+# ============================================================================
 def plot_dataset(ds):
-    """
-    Automatically plots each DataArray in an xarray Dataset against its primary coordinate.
+    # Plots each DataArray in xarray Dataset against primary coordinate
+    # Creates subplots with one plot per data variable
     
-    Parameters:
-      ds : xarray.Dataset
-         The dataset containing the solution variables. Each data variable is expected 
-         to be one-dimensional with a coordinate (e.g., time).
-    """
-    # Determine the number of data variables to plot.
     num_vars = len(ds.data_vars)
     
-    # Create subplots: one per data variable.
-    # If there's just one variable, axs will be a single Axes object.
+    # Create subplots (one per variable)
     fig, axs = plt.subplots(num_vars, 1, figsize=(10, 4*num_vars), squeeze=False)
     
-    # Loop over each variable and its corresponding Axes object.
+    # Plot each variable
     for idx, (var_name, data_array) in enumerate(ds.data_vars.items()):
         ax = axs[idx, 0]
-        # Assume that the first coordinate is the primary coordinate (e.g., "time").
-        # Get the name of the coordinate.
+        
+        # Get primary coordinate (usually time)
         coord_name = list(data_array.coords)[0]
         x_coord = ds[coord_name].values
         
-        # Plot the variable versus its coordinate.
+        # Create plot with markers and grid
         ax.plot(x_coord, data_array.values, marker='o', linestyle='-')
         ax.set_title(f"{var_name} vs. {coord_name}")
         ax.set_xlabel(coord_name)
