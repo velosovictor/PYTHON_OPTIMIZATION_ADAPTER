@@ -174,6 +174,9 @@ def build_global_model(equations=None):
     # ------------------------------------------------
     if minlp_enabled:
         add_discrete_logic_constraints(model)
+        # Apply GDP transformation for monolithic mode
+        from pyomo.environ import TransformationFactory
+        TransformationFactory('gdp.hull').apply_to(model)
     
     # ------------------------------------------------
     # Step 10: Define a dummy objective (required by Pyomo).

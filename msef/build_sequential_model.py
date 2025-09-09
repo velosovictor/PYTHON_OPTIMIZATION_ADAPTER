@@ -99,7 +99,10 @@ def run_build_sequential_model(plot_in_real_time=False):
         # ------------------------------------------------
         # Step 5a: Reload simulation parameters from JSON.
         # ------------------------------------------------
-        with open('c:/Users/velos/next_systems_engineering/msef/user_data/object_data.json', 'r') as f:
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, 'user_data', 'object_data.json')
+        with open(json_path, 'r') as f:
             new_params = json.load(f)
         update_parameters_with_json(new_params)
         
