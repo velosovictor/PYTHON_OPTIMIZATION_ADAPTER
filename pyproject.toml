@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "msef-optimization-framework"
+name = "pyomo-optimizer-user-interface"
 version = "1.0.0"
-description = "Mixed-Integer Nonlinear Programming (MINLP) simulation framework for multi-scale energy optimization problems"
+description = "Pyomo Optimizer User Interface - MINLP simulation framework for optimization problems"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
@@ -53,17 +53,17 @@ Issues = "https://github.com/velosovictor/PYTHON_OPTIMIZATION_ADAPTER/issues"
 Documentation = "https://github.com/velosovictor/PYTHON_OPTIMIZATION_ADAPTER#readme"
 
 [project.scripts]
-msef-run = "msef.main:run"
+pyomo-optimizer = "pyomo_optimizer_user_interface.main:run"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "/msef",
+    "/pyomo_optimizer_user_interface",
     "/README.md",
     "/LICENSE",
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["msef"]
+packages = ["pyomo_optimizer_user_interface"]
 
 [dependency-groups]
 dev = [

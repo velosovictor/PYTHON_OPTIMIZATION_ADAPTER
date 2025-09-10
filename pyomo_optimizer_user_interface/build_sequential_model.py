@@ -27,7 +27,7 @@ from .constraint_rules import MySymbolMap
 from .discretization import discretize_symbolic_eq
 from .discrete_logic import add_discrete_logic_constraints
 from .postprocessing_live import package_solution_live
-from .plotting.plotting_live import plot_dataset_live
+from .plotting_live import plot_dataset_live
 
 def run_build_sequential_model(plot_in_real_time=False):
     """

@@ -874,62 +874,6 @@ wheels = [
 ]
 
 [[package]]
-name = "msef-optimization-framework"
-version = "1.0.0"
-source = { editable = "." }
-dependencies = [
-    { name = "matplotlib" },
-    { name = "numpy" },
-    { name = "pymongo" },
-    { name = "pyomo" },
-    { name = "sympy" },
-    { name = "xarray" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "black" },
-    { name = "flake8" },
-    { name = "isort" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-]
-docs = [
-    { name = "sphinx" },
-    { name = "sphinx-rtd-theme" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "build" },
-    { name = "twine" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0" },
-    { name = "flake8", marker = "extra == 'dev'", specifier = ">=6.0.0" },
-    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.0.0" },
-    { name = "matplotlib", specifier = ">=3.8.0" },
-    { name = "numpy", specifier = ">=1.24.0" },
-    { name = "pymongo", specifier = ">=4.0.0" },
-    { name = "pyomo", specifier = ">=6.7.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
-    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=6.0.0" },
-    { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=1.0.0" },
-    { name = "sympy", specifier = ">=1.12.0" },
-    { name = "xarray", specifier = ">=2023.1.0" },
-]
-provides-extras = ["dev", "docs"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "build", specifier = ">=1.3.0" },
-    { name = "twine", specifier = ">=6.2.0" },
-]
-
-[[package]]
 name = "mypy-extensions"
 version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1327,6 +1271,62 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a2/dc/97005d683ca57e231a8f613921adaf480d3a82f40d280c6d0185855a92c6/pyomo-6.9.4-cp313-cp313-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:df3e173d330666f881258deefa79f37373b941d4a5b00edc6aa5b10680720dc1", size = 4312670, upload-time = "2025-08-28T02:10:11.563Z" },
     { url = "https://files.pythonhosted.org/packages/64/73/47525078660eced084abb9a79e1e4c74098c992316c93ab6ead2dc7f8bda/pyomo-6.9.4-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8a13baebcdb05deadeb0ec4b04ecedffa65f1e86179418fa67e603a4f8f1bf17", size = 4344540, upload-time = "2025-08-28T02:10:15.731Z" },
     { url = "https://files.pythonhosted.org/packages/d8/e3/56c20c3358e58206e7270a42ff666a267a6c01492213c8c47aad8676b487/pyomo-6.9.4-py3-none-any.whl", hash = "sha256:a274d74616c0b793279931f3b2175a31f9c63213f2d7b86c14d168c6c264f782", size = 3892640, upload-time = "2025-08-28T02:11:13.845Z" },
+]
+
+[[package]]
+name = "pyomo-optimizer-user-interface"
+version = "1.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pymongo" },
+    { name = "pyomo" },
+    { name = "sympy" },
+    { name = "xarray" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "black" },
+    { name = "flake8" },
+    { name = "isort" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+docs = [
+    { name = "sphinx" },
+    { name = "sphinx-rtd-theme" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "build" },
+    { name = "twine" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0" },
+    { name = "flake8", marker = "extra == 'dev'", specifier = ">=6.0.0" },
+    { name = "isort", marker = "extra == 'dev'", specifier = ">=5.0.0" },
+    { name = "matplotlib", specifier = ">=3.8.0" },
+    { name = "numpy", specifier = ">=1.24.0" },
+    { name = "pymongo", specifier = ">=4.0.0" },
+    { name = "pyomo", specifier = ">=6.7.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
+    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=6.0.0" },
+    { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=1.0.0" },
+    { name = "sympy", specifier = ">=1.12.0" },
+    { name = "xarray", specifier = ">=2023.1.0" },
+]
+provides-extras = ["dev", "docs"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "build", specifier = ">=1.3.0" },
+    { name = "twine", specifier = ">=6.2.0" },
 ]
 
 [[package]]

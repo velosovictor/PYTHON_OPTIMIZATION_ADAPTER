@@ -67,14 +67,15 @@ def count_restrictions():
     return total_constraints, init_constraints, ode_constraints, logic_constraints
 
 def load_logic_constraints():
-    # Load discrete logic constraints if they exist
+    # Load discrete logic constraints from consolidated object_data.json
     try:
         import os
         import json
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        json_path = os.path.join(current_dir, "user_data", "discrete_logic.json")
+        json_path = os.path.join(current_dir, "user_data", "object_data.json")
         with open(json_path, "r") as f:
-            return json.load(f)
+            data = json.load(f)
+            return data.get("discrete_logic", None)
     except:
         return None
 

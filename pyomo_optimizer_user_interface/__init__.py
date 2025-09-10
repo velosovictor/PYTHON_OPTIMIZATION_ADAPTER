@@ -1,12 +1,12 @@
 """
-MSEF - Mixed-Integer Nonlinear Programming Framework
+Pyomo Optimizer User Interface
 
 A powerful Python library for solving mixed-integer nonlinear programming (MINLP) 
 problems using Pyomo and Generalized Disjunctive Programming (GDP).
 """
 
 # ============================================================================
-# PYOMO INTERFACE TOOL
+# PYOMO OPTIMIZER USER INTERFACE
 # ============================================================================
 # Mixed-Integer Nonlinear Programming (MINLP) simulation framework
 # Provides tools for optimization with discrete logic constraints
