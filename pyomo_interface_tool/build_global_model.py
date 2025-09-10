@@ -14,7 +14,7 @@ import sympy as sp
 
 from .parameters import (
     dt_value, final_time, init_conditions, param_mapping, 
-    minlp_enabled, discrete_parameters
+    minlp_enabled, discrete_parameters, params_data
 )
 from .user_data.lookup import lookup_tables
 from .discretization import discretize_symbolic_eq
@@ -24,6 +24,7 @@ from .extra_variables import add_extra_variables
 
 # Import the new discrete logic module.
 from .discrete_logic import add_discrete_logic_constraints
+from .optimization import add_optimization_objective
 
 # ============================================================================
 # MODEL BUILDING FUNCTION
@@ -128,7 +129,8 @@ def build_global_model(equations=None):
         add_discrete_logic_constraints(model)
         TransformationFactory('gdp.hull').apply_to(model)
     
-    # Define dummy objective (required by solvers)
-    model.obj = Objective(expr=0, sense=minimize)
+    # Add optimization objective
+    optimization_config = params_data.get("optimization", {"enabled": False})
+    add_optimization_objective(model, optimization_config)
     
     return model, tau

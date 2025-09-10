@@ -1,0 +1,56 @@
+{
+  "unknown_parameters": ["x", "v"],
+  "init_conditions": {
+    "x0": 2.0,
+    "v0": 0.0
+  },
+  "parameters": { 
+    "m": 500,
+    "F": 0
+  },
+  "additional_functions": ["DAMPING"],
+  "equations": [
+    "diff(x(t), t) - v(t) = 0",
+    "m*diff(v(t), t) + DAMPING(x(t))*v(t) + k_eff*x(t) - F = 0"
+  ],
+  "dt_value": 0.5,
+  "final_time": 10,
+  "minlp_enabled": true,
+  "solver": "scip",
+  "solve_mode": "monolithic",
+  "discrete_parameters": [
+    {
+      "name": "k_eff",
+      "domain": "reals", 
+      "bounds": [100, 10000]
+    }
+  ],
+  "optimization": {
+    "enabled": true,
+    "mode": "constraint_based",
+    "optimization_variables": ["k_eff"],
+    "missing_constraints": [
+      {
+        "type": "scalar_target",
+        "variable": "x",
+        "target": 0.5,
+        "time": "final",
+        "description": "Position should reach 0.5 at final time"
+      },
+      {
+        "type": "scalar_target", 
+        "variable": "v",
+        "target": 0.0,
+        "time": "final", 
+        "description": "Velocity should be zero at final time"
+      }
+    ],
+    "objective": {
+      "type": "minimize",
+      "function": "energy",
+      "description": "Among all solutions that reach x=0.5, v=0, choose the one with minimum energy"
+    },
+    "constraint_priority": "feasibility_first",
+    "description": "PROBLEM 2: Under-Constrained System - Need optimization to choose best solution"
+  }
+}

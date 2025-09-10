@@ -1,0 +1,49 @@
+{
+  "unknown_parameters": ["x", "v"],
+  "init_conditions": {
+    "x0": 1.0,
+    "v0": 0.0
+  },
+  "parameters": { 
+    "m": 100,
+    "F": 0
+  },
+  "additional_functions": [],
+  "equations": [
+    "diff(x(t), t) - v(t) = 0",
+    "m*diff(v(t), t) + k_eff*x(t) - F = 0"
+  ],
+  "dt_value": 0.5,
+  "final_time": 1.0,
+  "minlp_enabled": true,
+  "solver": "scip",
+  "solve_mode": "monolithic",
+  "discrete_parameters": [
+    {
+      "name": "k_eff",
+      "domain": "reals",
+      "bounds": [100, 2000]
+    }
+  ],
+  "logic_parameters": {},
+  "optimization": {
+    "enabled": true,
+    "mode": "constraint_based",
+    "optimization_variables": ["k_eff"],
+    "missing_constraints": [
+      {
+        "type": "scalar_target",
+        "variable": "x",
+        "target": 0.5,
+        "time": "final",
+        "description": "Position should reach 0.5 at final time"
+      }
+    ],
+    "objective": {
+      "type": "minimize",
+      "function": "control_effort",
+      "description": "Among all k_eff values that make x(final)=0.5, choose minimum control effort"
+    }
+  },
+  "description": "PROBLEM 2: Spring-mass with unknown stiffness - UNDER-CONSTRAINED (Optimization needed)"
+}

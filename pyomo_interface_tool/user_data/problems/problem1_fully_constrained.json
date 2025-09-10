@@ -1,0 +1,37 @@
+{
+  "unknown_parameters": ["x", "v"],
+  "init_conditions": {
+    "x0": 2.0,
+    "v0": 0.0
+  },
+  "parameters": { 
+    "m": 500,
+    "F": 0
+  },
+  "additional_functions": ["DAMPING"],
+  "equations": [
+    "diff(x(t), t) - v(t) = 0",
+    "m*diff(v(t), t) + DAMPING(x(t))*v(t) + k_eff*x(t) - F = 0"
+  ],
+  "dt_value": 0.5,
+  "final_time": 10,
+  "minlp_enabled": true,
+  "solver": "scip",
+  "solve_mode": "monolithic",
+  "discrete_parameters": [
+    {
+      "name": "k_eff",
+      "domain": "reals",
+      "bounds": [0, 1e6]
+    }
+  ],
+  "logic_parameters": { 
+    "k_low": 1000,
+    "k_high": 5000,
+    "threshold": 0.1
+  },
+  "optimization": {
+    "enabled": false,
+    "description": "PROBLEM 1: Fully Constrained System - Logic constraints determine everything"
+  }
+}

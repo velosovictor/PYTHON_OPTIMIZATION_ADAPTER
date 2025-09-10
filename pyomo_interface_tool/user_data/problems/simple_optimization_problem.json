@@ -25,19 +25,12 @@
       "bounds": [100, 2000]
     }
   ],
-  "optimization": {
-    "enabled": true,
-    "mode": "objective_based",
-    "objective_type": "minimize",
-    "objective_function": "tracking",
-    "targets": {
-      "x_target": 0.0
-    },
-    "weights": {
-      "position_weight": 1.0,
-      "velocity_weight": 0.1
-    },
-    "optimization_variables": ["k"]
+  "optimization_objectives": {
+    "minimize_final_position": {
+      "type": "minimize",
+      "expression": "x_final**2",
+      "weight": 1.0
+    }
   },
   "logic_parameters": {},
   "description": "PROBLEM 2: Spring-mass with OPTIMIZATION - Find k to minimize final position"
