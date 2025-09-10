@@ -10,10 +10,10 @@
     "k_soft": 500,
     "k_stiff": 2000
   },
-  "additional_functions": [],
+  "additional_functions": ["DAMPING"],
   "equations": [
     "diff(x(t), t) - v(t) = 0",
-    "m*diff(v(t), t) + k_eff*x(t) - F = 0"
+    "m*diff(v(t), t) + DAMPING(x(t))*v(t) + k_eff*x(t) - F = 0"
   ],
   "dt_value": 0.5,
   "final_time": 1.0,
