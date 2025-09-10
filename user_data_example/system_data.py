@@ -19,10 +19,13 @@ description = "Spring-mass with OPTIMIZATION - Find k to minimize final position
 # Time-dependent state variables as xarray tensors with initial conditions specified
 time_horizon = np.linspace(0, 1.0, int(1.0/0.5) + 1)  # [0, 0.5, 1.0]
 
+# Collect all tensors in a dictionary for automatic export
+tensors = {}
+
 # Position tensor: only initial condition specified, rest unknown
 x_data = np.full(len(time_horizon), np.nan)  # All unknown initially
 x_data[0] = 1.0  # Only specify known initial condition: x(0) = 1.0
-x = xr.DataArray(
+tensors["x"] = xr.DataArray(
     data=x_data,
     coords={"time": time_horizon},
     dims=["time"]
@@ -31,16 +34,25 @@ x = xr.DataArray(
 # Velocity tensor: only initial condition specified, rest unknown
 v_data = np.full(len(time_horizon), np.nan)  # All unknown initially  
 v_data[0] = 0.0  # Only specify known initial condition: v(0) = 0.0
-v = xr.DataArray(
+tensors["v"] = xr.DataArray(
     data=v_data,
     coords={"time": time_horizon}, 
     dims=["time"]
 )
 
+# DAMPING tensor: fully specified (framework will detect it's NOT unknown)  
+# Coordinate system matches the x tensor values (position-dependent damping)
+x_coordinates = np.linspace(-2, 2, 100)  # Position range for damping lookup
+tensors["DAMPING"] = xr.DataArray(
+    data=1 + 0.1 * x_coordinates,
+    coords={"x": x_coordinates},  # Uses same 'x' coordinate name as position tensor
+    dims=["x"]
+)
+
 # Framework will auto-detect unknowns - NO coding logic here!
 
 # ============================================================================
-# SCALAR PARAMETERS
+# SCALAR PARAMETERS (ZERO DIMENSIONAL TENSORS) - we dont need to use xarray here
 # ============================================================================
 parameters = {
     "m": 100,
@@ -49,45 +61,15 @@ parameters = {
     "k_stiff": 2000
 }
 
-# ============================================================================
-# TENSOR PARAMETERS (XARRAY)
-# ============================================================================
-# DAMPING function as tensor - replicate damping = 1+0.1*x over x ∈ [-2,2]
-x_coords = np.linspace(-2, 2, 100)
-DAMPING = xr.DataArray(
-    data=1 + 0.1 * x_coords,
-    coords={"x": x_coords},
-    dims=["x"]
-)
+# Export individual tensors for backward compatibility  
+x = tensors["x"]
+v = tensors["v"] 
+DAMPING = tensors["DAMPING"]
 
-# Example time-varying force (commented for this problem)
-# time_coords = np.linspace(0, 1, 5)
-# F_time_dependent = xr.DataArray(
-#     data=[0, 25, 50, 25, 0],
-#     coords={"time": time_coords},
-#     dims=["time"]
-# )
-
-# Example 2D spatial stiffness matrix (commented for this problem)
-# x_pos_coords = np.array([-1.0, 0.0, 1.0])
-# y_pos_coords = np.array([-1.0, 0.0, 1.0]) 
-# k_spatial_matrix = xr.DataArray(
-#     data=[[500, 750, 500],
-#           [750, 1000, 750],
-#           [500, 750, 500]],
-#     coords={"x_pos": x_pos_coords, "y_pos": y_pos_coords},
-#     dims=["x_pos", "y_pos"]
-# )
-
-# Lookup tables dictionary for compatibility with existing system
+# Lookup tables for framework compatibility
 lookup_tables = {
-    "DAMPING": ("x", DAMPING)
+    "DAMPING": ("x", tensors["DAMPING"])
 }
-
-# ============================================================================
-# ADDITIONAL FUNCTIONS
-# ============================================================================
-additional_functions = ["DAMPING"]
 
 # ============================================================================
 # SYSTEM EQUATIONS
@@ -136,11 +118,6 @@ optimization = {
 }
 
 # ============================================================================
-# LOGIC PARAMETERS
-# ============================================================================
-logic_parameters = {}
-
-# ============================================================================
 # DISCRETE LOGIC CONSTRAINTS
 # ============================================================================
 discrete_logic = {
@@ -164,13 +141,11 @@ discrete_logic = {
 # ============================================================================
 # SYSTEM DATA DICTIONARY
 # ============================================================================
-# System data with native sparse tensor support
+# All tensors automatically included via tensors dictionary!
 system_data = {
-    "x": x,  # Sparse position tensor (auto-detected unknown)
-    "v": v,  # Sparse velocity tensor (auto-detected unknown)
-    # NOTE: unknown_parameters auto-detected by framework - no need to specify!
+    **tensors,  # Unpack all tensors automatically
     "parameters": parameters,
-    "additional_functions": additional_functions,
+    "lookup_tables": lookup_tables,
     "equations": equations,
     "dt_value": dt_value,
     "final_time": final_time,
@@ -179,7 +154,6 @@ system_data = {
     "solve_mode": solve_mode,
     "discrete_parameters": discrete_parameters,
     "optimization": optimization,
-    "logic_parameters": logic_parameters,
     "discrete_logic": discrete_logic,
     "description": description
 }
