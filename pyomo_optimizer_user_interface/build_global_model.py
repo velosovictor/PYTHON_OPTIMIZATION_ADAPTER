@@ -33,18 +33,30 @@ def build_global_model(equations=None):
     # Load parameters
     dt_value = get_parameter("dt_value")
     final_time = get_parameter("final_time")
-    init_conditions = get_parameter("init_conditions") or {}
+    state_variables = get_parameter("state_variables") or {}
     param_mapping = get_parameter("parameters") or {}
     minlp_enabled = get_parameter("minlp_enabled") or False
     discrete_parameters = get_parameter("discrete_parameters") or []
     params_data = get_all_parameters()
     
+    # Extract initial conditions directly from state variable tensors
+    init_conditions = {}
+    for var_name, tensor in state_variables.items():
+        init_value = tensor.sel(time=0).values.item()
+        init_conditions[f"{var_name}0"] = init_value
+    
     # Use provided equations or default to all_equations
     if equations is None:
         equations = all_equations
 
-    # Build simulation time grid
-    tau = np.arange(0, final_time + dt_value, dt_value)
+    # Build simulation time grid from state variable tensors or fallback to dt_value
+    if state_variables:
+        # Use time coordinates from first state variable tensor
+        first_tensor = next(iter(state_variables.values()))
+        tau = first_tensor.coords["time"].values
+    else:
+        # Fallback to dt_value approach
+        tau = np.arange(0, final_time + dt_value, dt_value)
     N = len(tau) - 1
 
     # Discretize system equations

@@ -11,20 +11,39 @@ import xarray as xr
 # ============================================================================
 # PROBLEM IDENTIFICATION
 # ============================================================================
-description = "PROBLEM 2: Spring-mass with OPTIMIZATION - Find k to minimize final position"
+description = "Spring-mass with OPTIMIZATION - Find k to minimize final position"
 
 # ============================================================================
-# STATE VARIABLES
+# NUMERICAL RESTRICTIONS (EVERY NUMERICAL RESTRICTION IS A N-DIMENSIONAL TENSOR)
 # ============================================================================
-unknown_parameters = ["x", "v"]
+# Time-dependent state variables as xarray tensors with initial conditions specified
+time_horizon = np.linspace(0, 1.0, int(1.0/0.5) + 1)  # [0, 0.5, 1.0]
 
-# ============================================================================
-# INITIAL CONDITIONS
-# ============================================================================
-init_conditions = {
-    "x0": 1.0,
-    "v0": 0.0
+# Position tensor with initial condition x(t=0) = 1.0
+x_initial_data = np.zeros(len(time_horizon))
+x_initial_data[0] = 1.0  # Initial condition: x(0) = 1.0
+x = xr.DataArray(
+    data=x_initial_data,
+    coords={"time": time_horizon},
+    dims=["time"]
+)
+
+# Velocity tensor with initial condition v(t=0) = 0.0  
+v_initial_data = np.zeros(len(time_horizon))
+v_initial_data[0] = 0.0  # Initial condition: v(0) = 0.0
+v = xr.DataArray(
+    data=v_initial_data,
+    coords={"time": time_horizon},
+    dims=["time"]
+)
+
+# State variable tensors (contain all information including initial conditions)
+state_variables = {
+    "x": x,  # Position tensor with x(0)=1.0 already specified
+    "v": v   # Velocity tensor with v(0)=0.0 already specified
 }
+
+unknown_parameters = ["x", "v"]  # Still needed for symbolic processing
 
 # ============================================================================
 # SCALAR PARAMETERS
@@ -151,10 +170,10 @@ discrete_logic = {
 # ============================================================================
 # SYSTEM DATA DICTIONARY
 # ============================================================================
-# This provides the same interface as the JSON approach
+# System data with native tensor support
 system_data = {
+    "state_variables": state_variables,  # Native xarray tensors
     "unknown_parameters": unknown_parameters,
-    "init_conditions": init_conditions,
     "parameters": parameters,
     "additional_functions": additional_functions,
     "equations": equations,
