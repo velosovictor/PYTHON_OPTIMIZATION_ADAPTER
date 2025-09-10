@@ -7,7 +7,7 @@
 import math
 import os
 import psutil
-from .parameters import dt_value, final_time, discrete_parameters, params_data
+from .parameters import get_parameter, get_all_parameters
 from .equations import unknown_funcs, all_equations
 
 # ============================================================================
@@ -15,7 +15,7 @@ from .equations import unknown_funcs, all_equations
 # ============================================================================
 
 def estimate_problem_size():
-    """Estimate the size and complexity of the optimization problem"""
+    # Estimate the size and complexity of the optimization problem
     
     # Calculate time discretization
     time_steps = int(final_time / dt_value) + 1

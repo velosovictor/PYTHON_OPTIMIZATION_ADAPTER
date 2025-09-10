@@ -12,10 +12,7 @@ from pyomo.environ import (
 import numpy as np
 import sympy as sp
 
-from .parameters import (
-    dt_value, final_time, init_conditions, param_mapping, 
-    minlp_enabled, discrete_parameters, params_data
-)
+from .parameters import get_parameter, get_all_parameters
 from .parameters import get_lookup_tables
 from .discretization import discretize_symbolic_eq
 from .equations import unknown_funcs, all_equations
@@ -32,6 +29,15 @@ from .optimization import add_optimization_objective
 def build_global_model(equations=None):
     # Constructs and returns the full Pyomo model for monolithic approach
     # Creates time grid, variables, constraints, and applies transformations
+    
+    # Load parameters
+    dt_value = get_parameter("dt_value")
+    final_time = get_parameter("final_time")
+    init_conditions = get_parameter("init_conditions") or {}
+    param_mapping = get_parameter("parameters") or {}
+    minlp_enabled = get_parameter("minlp_enabled") or False
+    discrete_parameters = get_parameter("discrete_parameters") or []
+    params_data = get_all_parameters()
     
     # Use provided equations or default to all_equations
     if equations is None:

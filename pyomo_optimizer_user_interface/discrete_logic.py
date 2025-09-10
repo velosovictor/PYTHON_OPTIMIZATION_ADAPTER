@@ -10,7 +10,7 @@ import sympy as sp
 from pyomo.gdp import Disjunction
 from pyomo.core.expr.sympy_tools import sympy2pyomo_expression
 from pyomo.environ import Var
-from .parameters import param_mapping, logic_parameters
+from .parameters import get_parameter
 
 # ============================================================================
 # LOGIC SYMBOL MAPPING CLASS
@@ -34,6 +34,8 @@ class LogicSymbolMap:
                 self.symbol_map[sp.symbols(comp.name)] = comp
         
         # Map parameters and logic parameters
+        param_mapping = get_parameter("parameters") or {}
+        logic_parameters = get_parameter("logic_parameters") or {}
         for key, value in param_mapping.items():
             self.symbol_map[sp.symbols(key)] = value
         for key, value in logic_parameters.items():
@@ -66,10 +68,11 @@ def parse_logic_expression(expr_str, model, index):
 
 def load_discrete_logic_json():
     # Loads discrete logic definitions from user data (problem-agnostic)
-    from .parameters import params_data
+    from .parameters import get_all_parameters
     
     try:
         # Extract discrete logic section from the loaded configuration
+        params_data = get_all_parameters()
         return params_data.get("discrete_logic", {"logic_constraints": []})
     except Exception as e:
         raise IOError(f"Error reading discrete logic from user configuration: {e}")

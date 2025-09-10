@@ -6,7 +6,7 @@
 
 import os
 from pyomo.environ import SolverFactory, value
-from .parameters import solver_name
+from .parameters import get_parameter
 from .equations import unknown_funcs
 from .solver_config import get_scip_path, is_scip_configured
 
@@ -18,6 +18,7 @@ def solve_model(model):
     # Returns results object after checking termination condition
     
     # Configure SCIP solver if needed
+    solver_name = get_parameter("solver") or "ipopt"
     if solver_name.lower() == 'scip' and is_scip_configured():
         scip_path = get_scip_path()
         scip_exe = os.path.join(scip_path, "bin", "scip.exe")

@@ -10,7 +10,7 @@ from .build_global_model import build_global_model
 from .solver import solve_model, extract_solution
 from .postprocessing import package_solution
 from .plotting import plot_dataset, plot_mixed_dataset
-from .parameters import dt_value, final_time, minlp_enabled, params_data, initialize_with_data_folder
+from .parameters import get_parameter, get_all_parameters, initialize_with_data_folder
 from .build_sequential_model import run_build_sequential_model
 from .optimization import analyze_optimization_results
 from .constraint_analyzer import analyze_constraint_structure, analyze_without_logic, suggest_missing_constraints
@@ -48,7 +48,7 @@ def run(data_folder=None):
     degrees_without_logic = analyze_without_logic()
     suggest_missing_constraints(degrees_without_logic)
     
-    solve_mode = params_data.get("solve_mode", "monolithic")
+    solve_mode = get_parameter("solve_mode") or "monolithic"
     
     if solve_mode == "monolithic":
         # Monolithic approach: build entire time horizon at once
@@ -56,11 +56,14 @@ def run(data_folder=None):
         solve_model(model)
         
         # Analyze optimization results
+        params_data = get_all_parameters()
         optimization_config = params_data.get("optimization", {"enabled": False})
         analyze_optimization_results(model, optimization_config)
         
         # Extract solution and create dataset
         sol_dict = extract_solution(model, model.T)
+        dt_value = get_parameter("dt_value")
+        final_time = get_parameter("final_time")
         ds = package_solution(tau, sol_dict, dt_value, final_time)
         
         # Display results
@@ -74,6 +77,8 @@ def run(data_folder=None):
         tau, sol_dict = run_build_sequential_model(plot_in_real_time=True)
         
         # Package and display results
+        dt_value = get_parameter("dt_value")
+        final_time = get_parameter("final_time")
         ds = package_solution(tau, sol_dict, dt_value, final_time, "Timewise results")
         plot_dataset(ds)
         plot_mixed_dataset(ds)

@@ -16,10 +16,7 @@ from pyomo.environ import (
     Piecewise, TransformationFactory, Param
 )
 
-from .parameters import (
-    dt_value, final_time, solver_name, init_conditions, minlp_enabled,
-    discrete_parameters, param_mapping, update_parameters_with_json, live_plotting, get_lookup_tables
-)
+from .parameters import get_parameter, update_parameters_with_json, get_lookup_tables
 from .equations import unknown_funcs, all_equations
 from .extra_variables import add_extra_variables
 from .constraint_rules import MySymbolMap
@@ -27,7 +24,6 @@ from .discretization import discretize_symbolic_eq
 from .discrete_logic import add_discrete_logic_constraints
 from .postprocessing import package_solution_live
 from .plotting import plot_dataset_live
-from .equations import unknown_funcs, all_equations
 
 
 def run_build_sequential_model(plot_in_real_time=False):
@@ -53,6 +49,8 @@ def run_build_sequential_model(plot_in_real_time=False):
     # ------------------------------------------------
     # Step 1: Build the full simulation time grid.
     # ------------------------------------------------
+    dt_value = get_parameter("dt_value")
+    final_time = get_parameter("final_time")
     tau = np.arange(0, final_time + dt_value, dt_value)
     N = len(tau) - 1
 
@@ -66,11 +64,13 @@ def run_build_sequential_model(plot_in_real_time=False):
     # Set initial conditions from JSON configuration.
     for f in unknown_funcs:
         fname = f.func.__name__
+        init_conditions = get_parameter("init_conditions") or {}
         sol_dict[fname][0] = init_conditions.get(fname + "0", 0.0)
 
     # ------------------------------------------------
     # Step 3: Create the solver.
     # ------------------------------------------------
+    solver_name = get_parameter("solver") or "ipopt"
     solver = SolverFactory(solver_name)
 
     # ------------------------------------------------
@@ -128,6 +128,8 @@ def run_build_sequential_model(plot_in_real_time=False):
             setattr(model, fname, var_obj)
 
         # (B) Add extra variables if MINLP is enabled.
+        minlp_enabled = get_parameter("minlp_enabled") or False
+        discrete_parameters = get_parameter("discrete_parameters") or []
         if minlp_enabled and discrete_parameters:
             add_extra_variables(model, model.T, discrete_parameters)
 
@@ -209,6 +211,7 @@ def run_build_sequential_model(plot_in_real_time=False):
             for lk in lookup_tables.keys():
                 my_map.symbol_map[sp.Symbol(f"{lk.upper()}_ip1")] = getattr(m, lk.lower())[0]
             my_map.symbol_map[sp.Symbol("dt")] = dt
+            param_mapping = get_parameter("parameters") or {}
             for p_key, p_val in param_mapping.items():
                 disc_expr = disc_expr.xreplace({sp.Symbol(p_key): p_val})
             unmapped = disc_expr.free_symbols - set(my_map.symbol_map.keys())

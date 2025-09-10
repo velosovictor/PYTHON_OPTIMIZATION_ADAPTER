@@ -7,7 +7,7 @@
 from pyomo.environ import Constraint
 from pyomo.core.expr.sympy_tools import sympy2pyomo_expression
 import sympy as sp
-from .parameters import dt_value
+from .parameters import get_parameter
 from .parameters import get_lookup_tables
 
 # ============================================================================
@@ -44,6 +44,7 @@ def generate_constraint_rule(discretized_expr, unknown_funcs, param_mapping,
             my_map.symbol_map[sp.Symbol(key)] = val
 
         # Map time step
+        dt_value = get_parameter("dt_value")
         my_map.symbol_map[sp.Symbol("dt")] = dt_value
 
         # Map lookup table symbols (loaded dynamically)

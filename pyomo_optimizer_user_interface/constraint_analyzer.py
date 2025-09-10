@@ -5,7 +5,7 @@
 # Implements the theory: Parameters vs Restrictions analysis
 
 import numpy as np
-from .parameters import dt_value, final_time, init_conditions, discrete_parameters, params_data
+from .parameters import get_parameter, get_all_parameters
 from .equations import unknown_funcs, all_equations
 
 # ============================================================================
@@ -13,11 +13,16 @@ from .equations import unknown_funcs, all_equations
 # ============================================================================
 def count_time_steps():
     # Count discretized time steps
+    final_time = get_parameter("final_time")
+    dt_value = get_parameter("dt_value")
+    if final_time is None or dt_value is None:
+        raise ValueError("final_time and dt_value must be defined in the problem data")
     return int(final_time / dt_value)
 
 def count_parameters():
     # Count total parameters to be determined
     N = count_time_steps() + 1  # Include t=0
+    discrete_parameters = get_parameter("discrete_parameters") or []
     
     # Unknown functions (state variables)
     state_params = len(unknown_funcs) * N
@@ -31,6 +36,8 @@ def count_parameters():
     total_params = state_params + opt_params
     
     print(f"Parameter Count Analysis:")
+    final_time = get_parameter("final_time")
+    dt_value = get_parameter("dt_value")
     print(f"  Time steps: {N} (t=0 to t={final_time}, dt={dt_value})")
     print(f"  State variables: {len(unknown_funcs)} × {N} = {state_params}")
     print(f"  Optimization variables: {len(discrete_parameters)} × {N} = {opt_params}")
@@ -41,6 +48,7 @@ def count_parameters():
 def count_restrictions():
     # Count total restrictions/constraints
     N = count_time_steps()
+    init_conditions = get_parameter("init_conditions") or {}
     
     # Initial conditions
     init_constraints = len(init_conditions)
@@ -50,6 +58,7 @@ def count_restrictions():
     
     # Logic constraints (if enabled)
     logic_constraints = 0
+    params_data = get_all_parameters()
     if params_data.get("minlp_enabled", False):
         logic_data = load_logic_constraints()
         if logic_data:
@@ -131,6 +140,8 @@ def analyze_without_logic():
     print("=" * 80)
     
     N = count_time_steps()
+    discrete_parameters = get_parameter("discrete_parameters") or []
+    init_conditions = get_parameter("init_conditions") or {}
     total_params = (len(unknown_funcs) + len(discrete_parameters)) * (N + 1)
     total_constraints = len(init_conditions) + len(all_equations) * N
     

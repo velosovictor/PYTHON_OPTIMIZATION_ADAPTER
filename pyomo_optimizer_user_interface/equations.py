@@ -19,8 +19,8 @@ def load_equations():
     t = sp.symbols('t', real=True)
     
     # Load configuration from parameters module (problem-agnostic)
-    from .parameters import params_data
-    eq_data = params_data
+    from .parameters import get_all_parameters
+    eq_data = get_all_parameters()
     
     # Create unknown functions (state variables)
     unknown_funcs = []

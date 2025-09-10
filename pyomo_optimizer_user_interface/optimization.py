@@ -9,7 +9,7 @@ from pyomo.environ import Objective, minimize, maximize
 from pyomo.core.expr.sympy_tools import sympy2pyomo_expression
 from .constraint_rules import MySymbolMap
 from .equations import unknown_funcs
-from .parameters import param_mapping
+from .parameters import get_parameter
 
 # ============================================================================
 # OBJECTIVE FUNCTION BUILDERS

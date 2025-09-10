@@ -11,6 +11,13 @@ import importlib.util
 from typing import Dict, Any, Optional
 
 # ============================================================================
+# GLOBAL VARIABLE DECLARATIONS
+# ============================================================================
+# Dynamic parameter storage - populated from user data folders
+_lookup_tables = None
+_loaded_parameters = {}
+
+# ============================================================================
 # CONFIGURATION CONSTANTS  
 # ============================================================================
 DEFAULT_PARAMS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "user_data_example", "object_data.json")
@@ -56,15 +63,10 @@ def load_lookup_tables_from_folder(data_folder):
 def update_parameters_with_json(json_data):
     # Update in-memory parameters with new JSON data
     # Used for real-time parameter updates in timewise mode
-    global config_parameters, logic_parameters, live_plotting
+    global _loaded_parameters
     
-    config_parameters.update(json_data.get("parameters", {}))
-    logic_parameters.update(json_data.get("logic_parameters", {}))
-    live_plotting = json_data.get("live_plotting", live_plotting)
+    _loaded_parameters.update(json_data)
 
-# ============================================================================
-# PARAMETER REINITIALIZATION FUNCTION
-# ============================================================================
 # ============================================================================
 # LOOKUP TABLE ACCESS FUNCTIONS
 # ============================================================================
@@ -83,43 +85,39 @@ def get_lookup_value(table_name: str, key: Any) -> Any:
     
     return data_array.sel({indep_var_name: key}).values
 
+# ============================================================================
+# PARAMETER REINITIALIZATION FUNCTION
+# ============================================================================
 def initialize_with_data_folder(data_folder):
     # Reinitialize all parameters with a custom data folder
     # Updates all global parameter variables and loads lookup tables
     
-    global params_data, config_parameters, dt_value, final_time, minlp_enabled
-    global logic_parameters, solver_name, discrete_parameters, solve_mode, live_plotting
-    global init_conditions, _lookup_tables
+    global _loaded_parameters, _lookup_tables
     
-    params_data = load_parameters_from_folder(data_folder)
+    _loaded_parameters = load_parameters_from_folder(data_folder)
     _lookup_tables = load_lookup_tables_from_folder(data_folder)
-    
-    config_parameters = params_data.get("parameters", {})
-    dt_value = params_data.get("dt_value", 0.1)
-    final_time = params_data.get("final_time", 10.0)
-    init_conditions = params_data.get("init_conditions", {})
-    minlp_enabled = params_data.get("minlp_enabled", False)
-    logic_parameters = params_data.get("logic_parameters", {})
-    solver_name = params_data.get("solver", "ipopt")
-    discrete_parameters = params_data.get("discrete_parameters", [])
-    solve_mode = params_data.get("solve_mode", "monolithic")
-    live_plotting = params_data.get("live_plotting", False)
+
+# ============================================================================
+# PARAMETER ACCESS FUNCTIONS
+# ============================================================================
+def get_parameter(key, default=None):
+    # Get parameter value by key from loaded parameters
+    return _loaded_parameters.get(key, default)
+
+def get_all_parameters():
+    # Get all loaded parameters as dictionary
+    return _loaded_parameters.copy()
+
+def set_parameter(key, value):
+    # Set parameter value in loaded parameters
+    global _loaded_parameters
+    _loaded_parameters[key] = value
 
 # ============================================================================
 # INITIALIZATION
 # ============================================================================
 # Initialize with default parameters and lookup tables on module import
-params_data = load_parameters_from_folder()
+_loaded_parameters = load_parameters_from_folder()
 _lookup_tables = load_lookup_tables_from_folder(os.path.dirname(DEFAULT_PARAMS_FILE))
 
-config_parameters = params_data.get("parameters", {})
-dt_value = params_data.get("dt_value", 0.1)
-final_time = params_data.get("final_time", 10.0)
-init_conditions = params_data.get("init_conditions", {})
-minlp_enabled = params_data.get("minlp_enabled", False)
-solver_name = params_data.get("solver", "ipopt")
-discrete_parameters = params_data.get("discrete_parameters", [])
-solve_mode = params_data.get("solve_mode", "monolithic")
-live_plotting = params_data.get("live_plotting", False)
-logic_parameters = params_data.get("logic_parameters", {})
-param_mapping = config_parameters
+# All parameters are now accessed through get_parameter() function calls
