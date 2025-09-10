@@ -6,12 +6,14 @@
   },
   "parameters": { 
     "m": 100,
-    "F": 0
+    "F": 0,
+    "k_soft": 500,
+    "k_stiff": 2000
   },
   "additional_functions": [],
   "equations": [
     "diff(x(t), t) - v(t) = 0",
-    "m*diff(v(t), t) + k*x(t) - F = 0"
+    "m*diff(v(t), t) + k_eff*x(t) - F = 0"
   ],
   "dt_value": 0.5,
   "final_time": 1.0,
@@ -20,9 +22,9 @@
   "solve_mode": "monolithic",
   "discrete_parameters": [
     {
-      "name": "k",
+      "name": "k_eff",
       "domain": "reals",
-      "bounds": [100, 2000]
+      "bounds": [100, 3000]
     }
   ],
   "optimization": {
@@ -37,8 +39,25 @@
       "position_weight": 1.0,
       "velocity_weight": 0.1
     },
-    "optimization_variables": ["k"]
+    "optimization_variables": ["k_eff"]
   },
   "logic_parameters": {},
+  "discrete_logic": {
+    "logic_constraints": [
+      {
+        "name": "spring_stiffness_logic",
+        "disjunction": [
+          {
+            "conditions": ["x <= 0.5"],
+            "assignments": ["k_eff == k_soft"]
+          },
+          {
+            "conditions": ["x >= 0.5"],
+            "assignments": ["k_eff == k_stiff"]
+          }
+        ]
+      }
+    ]
+  },
   "description": "PROBLEM 2: Spring-mass with OPTIMIZATION - Find k to minimize final position"
 }
