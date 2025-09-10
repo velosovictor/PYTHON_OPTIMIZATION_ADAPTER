@@ -22,9 +22,12 @@ def load_equations():
     from .parameters import get_all_parameters
     eq_data = get_all_parameters()
     
-    # Create unknown functions (state variables)
+    # Create unknown functions (state variables) - auto-detected from sparse tensors
+    from .parameters import detect_unknown_parameters
+    detected_unknowns = detect_unknown_parameters()
+    
     unknown_funcs = []
-    for name in eq_data.get("unknown_parameters", []):
+    for name in detected_unknowns:
         func = sp.Function(name)(t)
         unknown_funcs.append(func)
         globals()[name] = sp.Function(name)

@@ -122,6 +122,20 @@ def set_parameter(key, value):
     global _loaded_parameters
     _loaded_parameters[key] = value
 
+def detect_unknown_parameters():
+    """Auto-detect unknown parameters from sparse tensor analysis - FRAMEWORK LOGIC"""
+    import numpy as np
+    import xarray as xr
+    
+    unknown_params = []
+    for name, value in _loaded_parameters.items():
+        if isinstance(value, xr.DataArray):
+            # Check if xarray tensor has NaN values (indicating unknowns)
+            if np.any(np.isnan(value.values)):
+                unknown_params.append(name)
+    
+    return unknown_params
+
 # ============================================================================
 # INITIALIZATION
 # ============================================================================

@@ -73,7 +73,8 @@ def estimate_memory_requirements(problem_size):
     jacobian_memory = variables * constraints * 0.1 * 8e-9 * 1024  # MB (8 bytes per float)
     
     # SCIP solver overhead (depends on problem type)
-    minlp_enabled = params_data.get("minlp_enabled", False)
+    from pyomo_optimizer_user_interface.parameters import get_parameter
+    minlp_enabled = get_parameter("minlp_enabled", False)
     solver_overhead = 100 if minlp_enabled else 50  # MB
     
     total_memory = pyomo_overhead + variable_memory + constraint_memory + jacobian_memory + solver_overhead

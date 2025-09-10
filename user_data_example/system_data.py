@@ -19,31 +19,25 @@ description = "Spring-mass with OPTIMIZATION - Find k to minimize final position
 # Time-dependent state variables as xarray tensors with initial conditions specified
 time_horizon = np.linspace(0, 1.0, int(1.0/0.5) + 1)  # [0, 0.5, 1.0]
 
-# Position tensor with initial condition x(t=0) = 1.0
-x_initial_data = np.zeros(len(time_horizon))
-x_initial_data[0] = 1.0  # Initial condition: x(0) = 1.0
+# Position tensor: only initial condition specified, rest unknown
+x_data = np.full(len(time_horizon), np.nan)  # All unknown initially
+x_data[0] = 1.0  # Only specify known initial condition: x(0) = 1.0
 x = xr.DataArray(
-    data=x_initial_data,
+    data=x_data,
     coords={"time": time_horizon},
     dims=["time"]
 )
 
-# Velocity tensor with initial condition v(t=0) = 0.0  
-v_initial_data = np.zeros(len(time_horizon))
-v_initial_data[0] = 0.0  # Initial condition: v(0) = 0.0
+# Velocity tensor: only initial condition specified, rest unknown
+v_data = np.full(len(time_horizon), np.nan)  # All unknown initially  
+v_data[0] = 0.0  # Only specify known initial condition: v(0) = 0.0
 v = xr.DataArray(
-    data=v_initial_data,
-    coords={"time": time_horizon},
+    data=v_data,
+    coords={"time": time_horizon}, 
     dims=["time"]
 )
 
-# State variable tensors (contain all information including initial conditions)
-state_variables = {
-    "x": x,  # Position tensor with x(0)=1.0 already specified
-    "v": v   # Velocity tensor with v(0)=0.0 already specified
-}
-
-unknown_parameters = ["x", "v"]  # Still needed for symbolic processing
+# Framework will auto-detect unknowns - NO coding logic here!
 
 # ============================================================================
 # SCALAR PARAMETERS
@@ -170,10 +164,11 @@ discrete_logic = {
 # ============================================================================
 # SYSTEM DATA DICTIONARY
 # ============================================================================
-# System data with native tensor support
+# System data with native sparse tensor support
 system_data = {
-    "state_variables": state_variables,  # Native xarray tensors
-    "unknown_parameters": unknown_parameters,
+    "x": x,  # Sparse position tensor (auto-detected unknown)
+    "v": v,  # Sparse velocity tensor (auto-detected unknown)
+    # NOTE: unknown_parameters auto-detected by framework - no need to specify!
     "parameters": parameters,
     "additional_functions": additional_functions,
     "equations": equations,

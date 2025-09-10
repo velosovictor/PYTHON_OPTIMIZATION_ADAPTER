@@ -33,17 +33,26 @@ def build_global_model(equations=None):
     # Load parameters
     dt_value = get_parameter("dt_value")
     final_time = get_parameter("final_time")
-    state_variables = get_parameter("state_variables") or {}
     param_mapping = get_parameter("parameters") or {}
     minlp_enabled = get_parameter("minlp_enabled") or False
     discrete_parameters = get_parameter("discrete_parameters") or []
     params_data = get_all_parameters()
     
-    # Extract initial conditions directly from state variable tensors
+    # Auto-detect unknown parameters using framework logic (not user config!)
+    from pyomo_optimizer_user_interface.parameters import detect_unknown_parameters
+    unknown_params = detect_unknown_parameters()
+    
+    # Extract sparse state variable tensors and initial conditions
+    state_variables = {}
     init_conditions = {}
-    for var_name, tensor in state_variables.items():
-        init_value = tensor.sel(time=0).values.item()
-        init_conditions[f"{var_name}0"] = init_value
+    for var_name in unknown_params:
+        if var_name in params_data:
+            tensor = params_data[var_name]
+            state_variables[var_name] = tensor
+            # Extract initial condition (first known value)
+            init_value = tensor.sel(time=0).values.item()
+            if not np.isnan(init_value):
+                init_conditions[f"{var_name}0"] = init_value
     
     # Use provided equations or default to all_equations
     if equations is None:
