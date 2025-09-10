@@ -25,12 +25,16 @@ def load_equations():
     # Create unknown functions (state variables) - auto-detected from sparse tensors
     from .parameters import detect_unknown_parameters
     detected_unknowns = detect_unknown_parameters()
+    print(f"🔧 DEBUG: Detected unknowns: {detected_unknowns}")
     
     unknown_funcs = []
     for name in detected_unknowns:
-        func = sp.Function(name)(t)
-        unknown_funcs.append(func)
-        globals()[name] = sp.Function(name)
+        if name:  # Skip None or empty names
+            func = sp.Function(name)(t)
+            unknown_funcs.append(func)
+            globals()[name] = sp.Function(name)
+    
+    print(f"🔧 DEBUG: Created unknown_funcs: {[f.func.__name__ if f else 'None' for f in unknown_funcs]}")
     
     # Build parameter symbols from dictionary
     parameters = {}
@@ -62,5 +66,14 @@ def load_equations():
 # ============================================================================
 # MODULE INITIALIZATION
 # ============================================================================
-t, unknown_funcs, parameters, all_equations = load_equations()
-__all__ = ["t", "unknown_funcs", "all_equations"]
+# Remove static initialization - equations will be loaded dynamically when needed
+t = None
+unknown_funcs = None  
+parameters = None
+all_equations = None
+
+def get_equations():
+    """Get equations dynamically - loads fresh data each time"""
+    return load_equations()
+
+__all__ = ["load_equations", "get_equations"]

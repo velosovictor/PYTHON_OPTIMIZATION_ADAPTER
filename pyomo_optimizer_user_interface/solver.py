@@ -7,7 +7,7 @@
 import os
 from pyomo.environ import SolverFactory, value
 from .parameters import get_parameter
-from .equations import unknown_funcs
+from .equations import get_equations
 from .solver_config import get_scip_path, is_scip_configured
 
 # ============================================================================
@@ -45,6 +45,9 @@ def solve_with_parameters(params):
 def extract_solution(model, time_set):
     # Extracts solution values for all unknown functions
     # Returns dictionary mapping function names to solution arrays
+    
+    # Load equations dynamically
+    t, unknown_funcs, parameters, all_equations = get_equations()
     
     sol_dict = {}
     for f in unknown_funcs:

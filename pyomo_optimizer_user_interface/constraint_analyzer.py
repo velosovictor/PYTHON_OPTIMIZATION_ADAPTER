@@ -6,7 +6,7 @@
 
 import numpy as np
 from .parameters import get_parameter, get_all_parameters
-from .equations import unknown_funcs, all_equations
+from .equations import get_equations
 
 # ============================================================================
 # CONSTRAINT COUNTING FUNCTIONS
@@ -23,6 +23,9 @@ def count_parameters():
     # Count total parameters to be determined
     N = count_time_steps() + 1  # Include t=0
     discrete_parameters = get_parameter("discrete_parameters") or []
+    
+    # Load equations dynamically
+    t, unknown_funcs, parameters, all_equations = get_equations()
     
     # Unknown functions (state variables)
     state_params = len(unknown_funcs) * N
@@ -49,6 +52,9 @@ def count_restrictions():
     # Count total restrictions/constraints
     N = count_time_steps()
     init_conditions = get_parameter("init_conditions") or {}
+    
+    # Load equations dynamically  
+    t, unknown_funcs, parameters, all_equations = get_equations()
     
     # Initial conditions
     init_constraints = len(init_conditions)
@@ -137,6 +143,10 @@ def analyze_without_logic():
     N = count_time_steps()
     discrete_parameters = get_parameter("discrete_parameters") or []
     init_conditions = get_parameter("init_conditions") or {}
+    
+    # Load equations dynamically
+    t, unknown_funcs, parameters, all_equations = get_equations()
+    
     total_params = (len(unknown_funcs) + len(discrete_parameters)) * (N + 1)
     total_constraints = len(init_conditions) + len(all_equations) * N
     

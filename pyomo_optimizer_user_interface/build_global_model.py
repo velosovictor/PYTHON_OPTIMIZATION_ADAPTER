@@ -15,7 +15,7 @@ import sympy as sp
 from .parameters import get_parameter, get_all_parameters
 from .parameters import get_lookup_tables
 from .discretization import discretize_symbolic_eq
-from .equations import unknown_funcs, all_equations
+from .equations import get_equations
 from .constraint_rules import generate_constraint_rule
 from .extra_variables import add_extra_variables
 
@@ -54,9 +54,9 @@ def build_global_model(equations=None):
             if not np.isnan(init_value):
                 init_conditions[f"{var_name}0"] = init_value
     
-    # Use provided equations or default to all_equations
+    # Use provided equations or load fresh equations dynamically
     if equations is None:
-        equations = all_equations
+        t, unknown_funcs, parameters, equations = get_equations()
 
     # Build simulation time grid from state variable tensors or fallback to dt_value
     if state_variables:
@@ -71,7 +71,7 @@ def build_global_model(equations=None):
     # Discretize system equations
     discretized_equations = []
     for eq in equations:
-        disc = discretize_symbolic_eq(eq, dt_value, unknown_funcs)
+        disc = discretize_symbolic_eq(eq, dt_value, unknown_funcs, t, discrete_parameters)
         # Replace function calls with unified symbols
         disc = disc.xreplace({sp.Function("t")(sp.Symbol("t")): sp.Symbol("t")})
         
@@ -90,10 +90,21 @@ def build_global_model(equations=None):
     model = ConcreteModel(name="MonolithicODE_MINLP")
     model.T = RangeSet(0, N)
 
-    # Add decision variables for unknown functions
+    # Add decision variables for unknown functions with bounds
     for f in unknown_funcs:
         fname = str(f.func.__name__)
-        setattr(model, fname, Var(model.T, domain=Reals))
+        # Extract bounds from tensor attributes if available
+        bounds = None
+        if fname in params_data:
+            tensor = params_data[fname]
+            if hasattr(tensor, 'attrs') and 'bounds' in tensor.attrs:
+                bounds = tensor.attrs['bounds']
+                print(f"🔧 DEBUG: Setting bounds for {fname}: {bounds}")
+        
+        if bounds:
+            setattr(model, fname, Var(model.T, domain=Reals, bounds=bounds))
+        else:
+            setattr(model, fname, Var(model.T, domain=Reals))
     
     # Apply initial conditions
     for f in unknown_funcs:

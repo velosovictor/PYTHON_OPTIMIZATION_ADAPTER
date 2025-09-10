@@ -8,7 +8,7 @@ import math
 import os
 import psutil
 from .parameters import get_parameter, get_all_parameters
-from .equations import unknown_funcs, all_equations
+from .equations import get_equations
 
 # ============================================================================
 # COMPLEXITY ESTIMATION FUNCTIONS
@@ -22,6 +22,9 @@ def estimate_problem_size():
     dt_value = get_parameter("dt_value")
     discrete_parameters = get_parameter("discrete_parameters") or []
     params_data = get_all_parameters()
+    
+    # Load equations dynamically
+    t, unknown_funcs, parameters, all_equations = get_equations()
     
     # Calculate time discretization
     time_steps = int(final_time / dt_value) + 1
