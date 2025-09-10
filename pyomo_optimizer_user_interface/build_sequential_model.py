@@ -16,7 +16,7 @@ from pyomo.environ import (
     Piecewise, TransformationFactory, Param
 )
 
-from .parameters import get_parameter, update_parameters_with_json, get_lookup_tables
+from .parameters import get_parameter, update_parameters_with_data, get_lookup_tables
 from .equations import unknown_funcs, all_equations
 from .extra_variables import add_extra_variables
 from .constraint_rules import MySymbolMap
