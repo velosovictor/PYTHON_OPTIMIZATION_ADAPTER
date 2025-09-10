@@ -16,7 +16,7 @@ from .parameters import (
     dt_value, final_time, init_conditions, param_mapping, 
     minlp_enabled, discrete_parameters, params_data
 )
-from .dynamic_loader import get_lookup_tables
+from .parameters import get_lookup_tables
 from .discretization import discretize_symbolic_eq
 from .equations import unknown_funcs, all_equations
 from .constraint_rules import generate_constraint_rule

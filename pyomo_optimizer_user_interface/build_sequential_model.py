@@ -18,16 +18,17 @@ from pyomo.environ import (
 
 from .parameters import (
     dt_value, final_time, solver_name, init_conditions, minlp_enabled,
-    discrete_parameters, param_mapping, update_parameters, update_parameters_with_json, live_plotting
+    discrete_parameters, param_mapping, update_parameters_with_json, live_plotting, get_lookup_tables
 )
 from .equations import unknown_funcs, all_equations
 from .extra_variables import add_extra_variables
-from .dynamic_loader import get_lookup_tables
 from .constraint_rules import MySymbolMap
 from .discretization import discretize_symbolic_eq
 from .discrete_logic import add_discrete_logic_constraints
-from .postprocessing_live import package_solution_live
-from .plotting_live import plot_dataset_live
+from .postprocessing import package_solution_live
+from .plotting import plot_dataset_live
+from .equations import unknown_funcs, all_equations
+
 
 def run_build_sequential_model(plot_in_real_time=False):
     """

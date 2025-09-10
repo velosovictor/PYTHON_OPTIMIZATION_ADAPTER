@@ -9,8 +9,7 @@ from pyomo.environ import TransformationFactory
 from .build_global_model import build_global_model
 from .solver import solve_model, extract_solution
 from .postprocessing import package_solution
-from .plotting import plot_dataset
-from .plotting_mixed import plot_mixed_dataset
+from .plotting import plot_dataset, plot_mixed_dataset
 from .parameters import dt_value, final_time, minlp_enabled, params_data, initialize_with_data_folder
 from .build_sequential_model import run_build_sequential_model
 from .optimization import analyze_optimization_results
@@ -38,9 +37,7 @@ def run(data_folder=None):
     # Initialize parameters with the specified data folder
     initialize_with_data_folder(data_folder)
     
-    # Initialize dynamic loader for problem-agnostic data loading
-    from .dynamic_loader import initialize_dynamic_loader
-    initialize_dynamic_loader(data_folder)
+    # Dynamic loader functionality is now integrated into parameters module
     
     print(f"\n🎯 PYOMO OPTIMIZER USER INTERFACE")
     print("=" * 50)

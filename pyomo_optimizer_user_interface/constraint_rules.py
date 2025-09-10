@@ -8,7 +8,7 @@ from pyomo.environ import Constraint
 from pyomo.core.expr.sympy_tools import sympy2pyomo_expression
 import sympy as sp
 from .parameters import dt_value
-from .dynamic_loader import get_lookup_tables
+from .parameters import get_lookup_tables
 
 # ============================================================================
 # SYMBOL MAPPING CLASS

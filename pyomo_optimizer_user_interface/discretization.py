@@ -6,7 +6,7 @@
 
 import sympy as sp
 from .equations import t
-from .dynamic_loader import get_lookup_tables
+from .parameters import get_lookup_tables
 
 # ============================================================================
 # DISCRETIZATION FUNCTION

@@ -1,0 +1,18 @@
+{
+  "description": "REFERENCE: Tensor implementation example - native JSON tensor syntax",
+  "example_tensor_parameter": {
+    "DAMPING": {
+      "type": "tensor", 
+      "dims": ["x"],
+      "coords": {"x": [-2.0, -1.0, 0.0, 1.0, 2.0]},
+      "values": [0.8, 0.9, 1.0, 1.1, 1.2]
+    }
+  },
+  "notes": [
+    "This represents a 1D tensor function DAMPING(x)",
+    "Can be extended to nD: dims: ['x', 'y', 'z'] for 3D tensors",
+    "Native JSON syntax - no external lookup.py needed",
+    "Automatically converts to xarray DataArray for interpolation",
+    "Goal: Replace all piecewise functions with this unified approach"
+  ]
+}

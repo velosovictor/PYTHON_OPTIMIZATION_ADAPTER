@@ -17,7 +17,7 @@ __description__ = "A Python library for Mixed-Integer Nonlinear Programming (MIN
 # IMPORTS
 # ============================================================================
 from .main import run
-from .parameters import load_parameters_from_folder, update_parameters, initialize_with_data_folder
+from .parameters import load_parameters_from_folder, initialize_with_data_folder
 
 # ============================================================================
 # USER HELPER FUNCTIONS
@@ -61,7 +61,7 @@ __all__ = [
     "run",
     "create_sample_config",
     "load_parameters_from_folder", 
-    "update_parameters",
+
     "initialize_with_data_folder",
     "__version__",
 ]
