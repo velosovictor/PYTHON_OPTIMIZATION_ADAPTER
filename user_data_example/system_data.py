@@ -92,21 +92,45 @@ discrete_parameters = [
 ]
 
 # ============================================================================
-# OPTIMIZATION CONFIGURATION
+# OPTIMIZATION CONFIGURATION - PURE TENSOR-BASED APPROACH
 # ============================================================================
+# Pure optimization philosophy: find optimal tensor A by tuning parameters B
+# Parameter A: TARGET (what we want optimal) -> Results in optimal xarray tensor
+# Parameter B: TUNING VARIABLES (what we adjust to achieve optimal A)
+
+# AVAILABLE TARGET EXPRESSION OPTIONS:
+# =====================================
+# POINT-WISE TARGETS:
+# - "x[0]"           → Initial position
+# - "x[-1]"          → Final position  
+# - "v[1]"           → Velocity at t=1
+# - "x[0] + v[-1]"   → Combined expression
+#
+# GLOBAL TENSOR TARGETS:
+# - "sum(x**2)"      → Minimize total quadratic energy
+# - "sum(abs(x))"    → Minimize total absolute deviation
+# - "max(abs(x))"    → Minimize maximum absolute position
+# - "sum(x)"         → Minimize total position (could be negative!)
+# - "var(x)"         → Minimize position variance (smoothness)
+# - "x"              → Auto-detect best global metric (framework decides)
+#
+# MULTI-PARAMETER TARGETS:
+# - "0.5*m*sum(v**2) + 0.5*k_eff*sum(x**2)"  → Total mechanical energy
+# - "sum(x**2) + 0.1*sum(v**2)"              → Weighted position+velocity
+# - "sum((x - x_ref)**2)"                    → Tracking reference trajectory
+
 optimization = {
     "enabled": True,
-    "mode": "objective_based",
-    "objective_type": "minimize", 
-    "objective_function": "tracking",
-    "targets": {
-        "x_target": 0.0
-    },
-    "weights": {
-        "position_weight": 1.0,
-        "velocity_weight": 0.1
-    },
-    "optimization_variables": ["k_eff"]
+    
+    # PARAMETER A: What we want to optimize (the target tensor/parameter)
+    "target_parameter": "x",              # The tensor we want optimal values for
+    "target_expression": "sum(x**2)",     # GLOBAL: minimize total quadratic position
+    "objective_type": "minimize",          # minimize or maximize the target_expression
+    
+    # PARAMETER B: What we tune to achieve optimal Parameter A  
+    "tuning_variables": ["k_eff"],        # Variables we adjust to find optimal target
+    
+    # RESULT: Framework returns optimal x(t) xarray tensor + optimal k_eff value
 }
 
 # ============================================================================
