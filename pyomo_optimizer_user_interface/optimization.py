@@ -46,6 +46,7 @@ def create_energy_minimization_objective(model, weights=None):
     obj_expr = 0
     
     # Add kinetic energy: 0.5 * m * v^2
+    param_mapping = get_parameter("parameters") or {}
     if hasattr(model, 'v') and 'm' in param_mapping:
         m_val = param_mapping['m']
         kinetic_weight = weights.get("kinetic", 1.0)

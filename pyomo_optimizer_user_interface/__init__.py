@@ -1,7 +1,9 @@
 """
 Pyomo Optimizer User Interface
 
-A powerful Python library for solving mixed-integer nonlinear programming (MINLP) 
+    # Source file from the package
+    source_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "user_data_example", "object_data.json")
+    target_file = os.path.join(target_folder, "object_data.json")owerful Python library for solving mixed-integer nonlinear programming (MINLP) 
 problems using Pyomo and Generalized Disjunctive Programming (GDP).
 """
 
@@ -38,7 +40,7 @@ def create_sample_config(target_folder=None):
         target_folder = os.getcwd()
     
     # Source file from the package
-    source_file = os.path.join(os.path.dirname(__file__), "user_data", "object_data.json")
+    source_file = os.path.join(os.path.dirname(__file__), "..", "user_data_example", "object_data.json")
     target_file = os.path.join(target_folder, "object_data.json")
     
     if os.path.exists(target_file):

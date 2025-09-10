@@ -17,6 +17,12 @@ from .equations import unknown_funcs, all_equations
 def estimate_problem_size():
     # Estimate the size and complexity of the optimization problem
     
+    # Get parameters dynamically
+    final_time = get_parameter("final_time")
+    dt_value = get_parameter("dt_value")
+    discrete_parameters = get_parameter("discrete_parameters") or []
+    params_data = get_all_parameters()
+    
     # Calculate time discretization
     time_steps = int(final_time / dt_value) + 1
     
@@ -86,6 +92,8 @@ def estimate_solve_time(problem_size):
     
     variables = problem_size["total_variables"]
     constraints = problem_size["total_constraints"]
+    params_data = get_all_parameters()
+    discrete_parameters = get_parameter("discrete_parameters") or []
     minlp_enabled = params_data.get("minlp_enabled", False)
     
     # Base complexity factors (empirical)
@@ -158,6 +166,9 @@ def check_system_resources():
 
 def assess_feasibility(problem_size, memory_req, system_resources):
     """Assess if the problem is feasible given current resources"""
+    
+    params_data = get_all_parameters()
+    discrete_parameters = get_parameter("discrete_parameters") or []
     
     warnings = []
     recommendations = []
