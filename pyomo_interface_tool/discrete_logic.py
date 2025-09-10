@@ -7,16 +7,15 @@
 import os
 import json
 import sympy as sp
-
 from pyomo.gdp import Disjunction
 from pyomo.core.expr.sympy_tools import sympy2pyomo_expression
 from pyomo.environ import Var
-
 from .parameters import param_mapping, logic_parameters
 
 # ============================================================================
 # LOGIC SYMBOL MAPPING CLASS
 # ============================================================================
+class LogicSymbolMap:
     # Maps Sympy symbols to Pyomo variables for logic expressions
     def __init__(self, model, index):
         self.model = model
@@ -50,7 +49,6 @@ from .parameters import param_mapping, logic_parameters
 def parse_logic_expression(expr_str, model, index):
     # Parses logic expression string into Pyomo expression
     # Uses evaluate=False to preserve relational operators
-    
     sym_map = LogicSymbolMap(model, index)
     
     try:
@@ -83,32 +81,8 @@ def load_discrete_logic_json():
 # DISCRETE LOGIC CONSTRAINT FUNCTION
 # ============================================================================
 def add_discrete_logic_constraints(model):
-    """
-    Reads discrete logic definitions from the JSON file and adds corresponding 
-    Pyomo disjunction constraints to the model.
-    
-    The JSON file should have the following structure:
-    
-    {
-      "logic_constraints": [
-        {
-          "name": "spring_logic",    // Optional; if not provided a default name is used.
-          "disjunction": [
-            {
-              "conditions": ["x <= threshold"],
-              "assignments": ["k_eff == k_high"]
-            },
-            {
-              "conditions": ["x >= threshold"],
-              "assignments": ["k_eff == k_low"]
-            }
-          ]
-        }
-      ]
-    }
-    
-    For each logic constraint, a disjunction is added over the model’s time set (model.T).
-    """
+    # Reads discrete logic definitions from the JSON file and adds corresponding 
+    # Pyomo disjunction constraints to the model
     logic_data = load_discrete_logic_json()
     logic_constraints = logic_data.get("logic_constraints", [])
     if not logic_constraints:
@@ -118,27 +92,28 @@ def add_discrete_logic_constraints(model):
     for logic in logic_constraints:
         disjunction_def = logic.get("disjunction")
         if not disjunction_def:
-            continue  # Skip if no disjunction is defined.
+            continue
+        
         # Use the provided name or default to "discrete_logic"
         logic_name = logic.get("name", "discrete_logic")
         
-        # Define a disjunction rule function for the model's time set.
+        # Define a disjunction rule function for the model's time set
         def disj_rule(m, t, disjunction_def=disjunction_def):
             disjuncts = []
             for disj in disjunction_def:
                 constraints = []
-                # Process each condition.
+                # Process each condition
                 for cond_str in disj.get("conditions", []):
                     expr = parse_logic_expression(cond_str, m, t)
                     constraints.append(expr)
-                # Process each assignment.
+                # Process each assignment
                 for assign_str in disj.get("assignments", []):
                     expr = parse_logic_expression(assign_str, m, t)
                     constraints.append(expr)
                 disjuncts.append(constraints)
             return disjuncts
 
-        # Attach the disjunction to the model using the specified (or default) name.
+        # Attach the disjunction to the model using the specified name
         disj_component_name = logic_name
         if hasattr(model, disj_component_name):
             disj_component_name = disj_component_name + "_dup"

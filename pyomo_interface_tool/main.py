@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 # ============================================================================
 def run():
     # Main execution function that chooses between monolithic and timewise modes
+    
     solve_mode = params_data.get("solve_mode", "monolithic")
     
     if solve_mode == "monolithic":
