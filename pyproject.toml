@@ -59,6 +59,7 @@ pyomo-optimizer = "pyomo_optimizer_user_interface.main:run"
 [tool.hatch.build.targets.sdist]
 include = [
     "/pyomo_optimizer_user_interface",
+    "/user_data_example",
     "/README.md",
     "/LICENSE",
 ]

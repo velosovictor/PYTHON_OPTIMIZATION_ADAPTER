@@ -30,6 +30,10 @@ cd PYTHON_OPTIMIZATION_ADAPTER
 
 # Install with UV (fast Python package manager)
 uv sync
+
+# Copy example configuration to your working directory
+cp -r user_data_example my_project
+# Edit my_project/object_data.json to define your problem
 ```
 
 ### Standard Installation
@@ -59,13 +63,17 @@ set_scip_path("/path/to/scip/installation")
 
 ## 🎯 Quick Start
 
-### 1. Simple Execution
+### 1. Command Line Execution
 ```bash
-# Run with current configuration
+# Run with default configuration (uses internal data)
 uv run python main.py
 
+# Run with external data folder
+uv run python main.py "C:/path/to/your/data/folder"
+uv run python main.py "./user_data_example"
+
 # Or using module execution
-uv run python -m pyomo_optimizer_user_interface.main
+uv run python -m pyomo_optimizer_user_interface.main "C:/path/to/your/data/folder"
 ```
 
 ### 2. Python API
@@ -82,8 +90,19 @@ run()
 pyomo-optimizer
 ```
 
-### 4. Custom Problem Configuration
-Edit `pyomo_optimizer_user_interface/user_data/object_data.json`:
+### 4. Using External Configuration (Recommended for Users)
+```python
+from pyomo_optimizer_user_interface import run
+
+# Copy the example folder to your project
+# cp -r user_data_example my_optimization_project
+
+# Use your custom data folder
+result = run(data_folder="./my_optimization_project")
+```
+
+### 5. Custom Problem Configuration
+Edit your external `object_data.json` file (or modify `pyomo_optimizer_user_interface/user_data/object_data.json`):
 
 ```json
 {
@@ -347,6 +366,10 @@ uv build
 ```
 PYTHON_OPTIMIZATION_ADAPTER/
 ├── main.py                                 # 🚀 Simple execution entry point
+├── user_data_example/                      # 📁 Example configuration files
+│   ├── README.md                          # 📖 Configuration guide
+│   ├── object_data.json                   # 📝 Example problem definition
+│   └── lookup.py                          # 📈 Example piecewise functions
 ├── pyomo_optimizer_user_interface/         # 📦 Main package
 │   ├── __init__.py                        # Package initialization & exports
 │   ├── main.py                            # Core execution logic

@@ -18,10 +18,9 @@ def load_equations():
     # Define symbolic time variable
     t = sp.symbols('t', real=True)
     
-    # Load configuration from JSON file
-    EQ_FILE = os.path.join(os.path.dirname(__file__), "user_data", "object_data.json")
-    with open(EQ_FILE, "r") as f:
-        eq_data = json.load(f)
+    # Load configuration from parameters module (problem-agnostic)
+    from .parameters import params_data
+    eq_data = params_data
     
     # Create unknown functions (state variables)
     unknown_funcs = []

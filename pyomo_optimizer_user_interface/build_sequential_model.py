@@ -22,7 +22,7 @@ from .parameters import (
 )
 from .equations import unknown_funcs, all_equations
 from .extra_variables import add_extra_variables
-from .user_data.lookup import lookup_tables
+from .dynamic_loader import get_lookup_tables
 from .constraint_rules import MySymbolMap
 from .discretization import discretize_symbolic_eq
 from .discrete_logic import add_discrete_logic_constraints
@@ -130,7 +130,8 @@ def run_build_sequential_model(plot_in_real_time=False):
         if minlp_enabled and discrete_parameters:
             add_extra_variables(model, model.T, discrete_parameters)
 
-        # (C) Add piecewise constraints for lookup tables.
+        # (C) Add piecewise constraints for lookup tables (loaded dynamically).
+        lookup_tables = get_lookup_tables()
         for key, (indep_var_name, data_array) in lookup_tables.items():
             lookup_var = Var(model.T, domain=Reals)
             setattr(model, key.lower(), lookup_var)

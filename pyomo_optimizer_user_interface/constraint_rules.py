@@ -8,7 +8,7 @@ from pyomo.environ import Constraint
 from pyomo.core.expr.sympy_tools import sympy2pyomo_expression
 import sympy as sp
 from .parameters import dt_value
-from .user_data.lookup import lookup_tables
+from .dynamic_loader import get_lookup_tables
 
 # ============================================================================
 # SYMBOL MAPPING CLASS
@@ -46,7 +46,8 @@ def generate_constraint_rule(discretized_expr, unknown_funcs, param_mapping,
         # Map time step
         my_map.symbol_map[sp.Symbol("dt")] = dt_value
 
-        # Map lookup table symbols
+        # Map lookup table symbols (loaded dynamically)
+        lookup_tables = get_lookup_tables()
         for key in lookup_tables.keys():
             my_map.symbol_map[sp.Symbol(f"{key.upper()}_ip1")] = getattr(model, key.lower())[i+1]
 

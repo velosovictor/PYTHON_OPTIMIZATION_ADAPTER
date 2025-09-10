@@ -11,7 +11,7 @@ from .solver import solve_model, extract_solution
 from .postprocessing import package_solution
 from .plotting import plot_dataset
 from .plotting_mixed import plot_mixed_dataset
-from .parameters import dt_value, final_time, minlp_enabled, params_data
+from .parameters import dt_value, final_time, minlp_enabled, params_data, initialize_with_data_folder
 from .build_sequential_model import run_build_sequential_model
 from .optimization import analyze_optimization_results
 from .constraint_analyzer import analyze_constraint_structure, analyze_without_logic, suggest_missing_constraints
@@ -21,11 +21,30 @@ import matplotlib.pyplot as plt
 # ============================================================================
 # MAIN EXECUTION FUNCTION
 # ============================================================================
-def run():
-    # Main execution function that chooses between monolithic and timewise modes
+def run(data_folder=None):
+    """
+    Main execution function that chooses between monolithic and timewise modes
+    
+    Args:
+        data_folder (str, optional): Path to folder containing object_data.json and other config files.
+                                   If None, uses current working directory.
+    """
+    import os
+    
+    # Set default data folder to current working directory if not specified
+    if data_folder is None:
+        data_folder = os.getcwd()
+    
+    # Initialize parameters with the specified data folder
+    initialize_with_data_folder(data_folder)
+    
+    # Initialize dynamic loader for problem-agnostic data loading
+    from .dynamic_loader import initialize_dynamic_loader
+    initialize_dynamic_loader(data_folder)
     
     print(f"\n🎯 PYOMO OPTIMIZER USER INTERFACE")
     print("=" * 50)
+    print(f"📁 Using data folder: {data_folder}")
     
     # Analyze the constraint structure according to the theory
     system_type = analyze_constraint_structure()
@@ -66,4 +85,13 @@ def run():
 # SCRIPT EXECUTION
 # ============================================================================
 if __name__ == "__main__":
-    run()
+    import sys
+    
+    # Check if user provided a data folder argument
+    if len(sys.argv) > 1:
+        data_folder = sys.argv[1]
+        print(f"🎯 Using external data folder: {data_folder}")
+        run(data_folder=data_folder)
+    else:
+        print("🎯 Using default configuration")
+        run()

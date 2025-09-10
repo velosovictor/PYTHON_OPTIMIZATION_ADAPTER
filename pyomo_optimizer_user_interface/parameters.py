@@ -11,13 +11,34 @@ import json
 # ============================================================================
 # CONFIGURATION CONSTANTS
 # ============================================================================
-PARAMS_FILE = os.path.join(os.path.dirname(__file__), "user_data", "object_data.json")
+# Point to the example folder at the root level
+DEFAULT_PARAMS_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "user_data_example", "object_data.json")
 SPECIAL_KEYS = (
     "init_conditions", "dt_value", "final_time", "minlp_enabled",
     "solver", "discrete_parameters", "logic_constraints",
     "solve_mode", "live_plotting",
     "unknown_parameters", "additional_functions", "equations"
 )
+
+def load_parameters_from_folder(data_folder=None):
+    """
+    Load parameters from specified data folder or use defaults
+    
+    Args:
+        data_folder (str, optional): Path to folder containing object_data.json
+    
+    Returns:
+        dict: Loaded parameters
+    """
+    if data_folder:
+        params_file = os.path.join(data_folder, "object_data.json")
+        if not os.path.exists(params_file):
+            raise FileNotFoundError(f"object_data.json not found in {data_folder}")
+    else:
+        params_file = DEFAULT_PARAMS_FILE
+    
+    with open(params_file, 'r') as f:
+        return json.load(f)
 
 # ============================================================================
 # GLOBAL PARAMETER STORAGE
@@ -28,31 +49,7 @@ logic_parameters = {}   # Discrete logic parameters
 # ============================================================================
 # PARAMETER LOADING FUNCTIONS
 # ============================================================================
-def load_parameters():
-    # Load all parameters from the JSON configuration file
-    with open(PARAMS_FILE, "r") as f:
-        data = json.load(f)
-
-    global config_parameters, dt_value, final_time
-    global init_conditions, minlp_enabled, solver_name
-    global discrete_parameters, solve_mode, live_plotting
-    global logic_parameters
-
-    # Load primary numeric parameters
-    config_parameters = data.get("parameters", {})
-    logic_parameters = data.get("logic_parameters", {})
-
-    # Load simulation settings
-    dt_value = data.get("dt_value", 0.1)
-    final_time = data.get("final_time", 10)
-    init_conditions = data.get("init_conditions", {})
-    minlp_enabled = data.get("minlp_enabled", False)
-    solver_name = data.get("solver", "ipopt")
-    discrete_parameters = data.get("discrete_parameters", [])
-    solve_mode = data.get("solve_mode", "monolithic")
-    live_plotting = data.get("live_plotting", False)
-
-    return data
+# Removed old load_parameters() function - now using load_parameters_from_folder()
 
 def update_parameters():
     # Simple parameter reload with debug output
@@ -77,6 +74,38 @@ def update_parameters_with_json(json_data):
 # ============================================================================
 # INITIALIZATION
 # ============================================================================
-# Perform initial load on module import
-params_data = load_parameters()
+# Perform initial load on module import (using defaults)
+# Initialize with default internal data folder first
+params_data = load_parameters_from_folder()
+
+# Initialize all global variables with default values
+config_parameters = params_data.get("parameters", {})
+dt_value = params_data.get("dt_value", 0.1)
+final_time = params_data.get("final_time", 10.0)
+init_conditions = params_data.get("init_conditions", {})
+minlp_enabled = params_data.get("minlp_enabled", False)
+solver_name = params_data.get("solver", "ipopt")
+discrete_parameters = params_data.get("discrete_parameters", [])
+solve_mode = params_data.get("solve_mode", "monolithic")
+live_plotting = params_data.get("live_plotting", False)
+logic_parameters = params_data.get("logic_parameters", {})
 param_mapping = config_parameters  # Convenient alias for parameter mapping
+
+# Function to reinitialize with custom data folder
+def initialize_with_data_folder(data_folder):
+    """Reinitialize all parameters with a custom data folder"""
+    global params_data, config_parameters, dt_value, final_time, minlp_enabled
+    global logic_parameters, solver_name, discrete_parameters, solve_mode, live_plotting
+    
+    params_data = load_parameters_from_folder(data_folder)
+    
+    # Update all global variables
+    config_parameters = params_data.get("parameters", {})
+    dt_value = params_data.get("dt_value", 0.1)
+    final_time = params_data.get("final_time", 10.0)
+    minlp_enabled = params_data.get("minlp_enabled", False)
+    logic_parameters = params_data.get("logic_parameters", {})
+    solver_name = params_data.get("solver", "ipopt")
+    discrete_parameters = params_data.get("discrete_parameters", [])
+    solve_mode = params_data.get("solve_mode", "monolithic")
+    live_plotting = params_data.get("live_plotting", False)

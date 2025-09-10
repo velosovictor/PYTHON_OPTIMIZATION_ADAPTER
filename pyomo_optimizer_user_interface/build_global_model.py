@@ -16,7 +16,7 @@ from .parameters import (
     dt_value, final_time, init_conditions, param_mapping, 
     minlp_enabled, discrete_parameters, params_data
 )
-from .user_data.lookup import lookup_tables
+from .dynamic_loader import get_lookup_tables
 from .discretization import discretize_symbolic_eq
 from .equations import unknown_funcs, all_equations
 from .constraint_rules import generate_constraint_rule
@@ -78,7 +78,8 @@ def build_global_model(equations=None):
                 return getattr(m, fname)[idx] == init_conditions[key0]
             setattr(model, f"init_{fname}", Constraint(rule=init_rule))
     
-    # Add piecewise constraints for lookup tables
+    # Add piecewise constraints for lookup tables (loaded dynamically from user data)
+    lookup_tables = get_lookup_tables()
     for key, (indep_var_name, data_array) in lookup_tables.items():
         setattr(model, key.lower(), Var(model.T, domain=Reals))
         indep_var = getattr(model, indep_var_name)

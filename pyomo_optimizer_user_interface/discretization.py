@@ -6,7 +6,7 @@
 
 import sympy as sp
 from .equations import t
-from .user_data.lookup import lookup_tables
+from .dynamic_loader import get_lookup_tables
 
 # ============================================================================
 # DISCRETIZATION FUNCTION
@@ -34,7 +34,8 @@ def discretize_symbolic_eq(eq, dt, unknown_funcs, replacement_dict=None):
     if replacement_dict is not None:
         res = res.xreplace(replacement_dict)
     
-    # Replace lookup function calls with discrete symbols
+    # Replace lookup function calls with discrete symbols (loaded dynamically)
+    lookup_tables = get_lookup_tables()
     for key in lookup_tables.keys():
         res = res.subs(sp.Function(key)(sp.Symbol("x_ip1")), sp.Symbol(f"{key.upper()}_ip1"))
     

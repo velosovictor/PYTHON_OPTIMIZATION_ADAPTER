@@ -65,17 +65,14 @@ def parse_logic_expression(expr_str, model, index):
     return pyomo_expr
 
 def load_discrete_logic_json():
-    # Loads discrete logic definitions from consolidated object_data.json file
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(current_dir, "user_data", "object_data.json")
+    # Loads discrete logic definitions from user data (problem-agnostic)
+    from .parameters import params_data
     
     try:
-        with open(json_path, "r") as f:
-            data = json.load(f)
-        # Extract discrete logic section from the main configuration
-        return data.get("discrete_logic", {"logic_constraints": []})
+        # Extract discrete logic section from the loaded configuration
+        return params_data.get("discrete_logic", {"logic_constraints": []})
     except Exception as e:
-        raise IOError(f"Error reading discrete logic from {json_path}: {e}")
+        raise IOError(f"Error reading discrete logic from user configuration: {e}")
 
 # ============================================================================
 # DISCRETE LOGIC CONSTRAINT FUNCTION
