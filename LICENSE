@@ -19,3 +19,59 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+================================================================================
+THIRD-PARTY LIBRARIES AND ACKNOWLEDGMENTS
+================================================================================
+
+This software uses and acknowledges the following third-party libraries:
+
+PYOMO - Optimization Modeling in Python
+Copyright (c) 2008-2024 National Technology and Engineering Solutions of Sandia, LLC
+License: BSD 3-Clause License
+Homepage: https://pyomo.readthedocs.io/
+Note: Pyomo is distributed under the BSD 3-Clause License, which is compatible with MIT.
+
+SCIP - Solving Constraint Integer Programs  
+Copyright (c) 2002-2024 Zuse Institute Berlin (ZIB)
+License: Apache License 2.0 (for academic and non-commercial use)
+Homepage: https://www.scipopt.org/
+Note: SCIP is free for academic and non-commercial use. Commercial licenses available.
+      This software interfaces with SCIP but does not redistribute SCIP binaries.
+
+NumPy - Fundamental package for scientific computing
+Copyright (c) 2005-2024 NumPy Developers
+License: BSD 3-Clause License
+Homepage: https://numpy.org/
+
+Matplotlib - Python plotting library
+Copyright (c) 2002-2024 Matplotlib Development Team
+License: Matplotlib License (BSD-compatible)  
+Homepage: https://matplotlib.org/
+
+SymPy - Python library for symbolic mathematics
+Copyright (c) 2006-2024 SymPy Development Team
+License: BSD 3-Clause License
+Homepage: https://sympy.org/
+
+xarray - N-D labeled arrays and datasets
+Copyright (c) 2014-2024 xarray Developers
+License: Apache License 2.0
+Homepage: https://xarray.pydata.org/
+
+psutil - Cross-platform system and process utilities
+Copyright (c) 2009-2024 Giampaolo Rodola'
+License: BSD 3-Clause License
+Homepage: https://github.com/giampaolo/psutil
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+This software is designed to interface with optimization solvers including SCIP.
+Users are responsible for:
+- Ensuring proper licensing for commercial use of SCIP
+- Complying with all applicable licenses of third-party dependencies  
+- Understanding that this software does not include or redistribute SCIP binaries
+
+For commercial use, please verify all licensing requirements independently.

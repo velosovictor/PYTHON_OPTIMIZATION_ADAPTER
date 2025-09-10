@@ -15,6 +15,7 @@ from .parameters import dt_value, final_time, minlp_enabled, params_data
 from .build_sequential_model import run_build_sequential_model
 from .optimization import analyze_optimization_results
 from .constraint_analyzer import analyze_constraint_structure, analyze_without_logic, suggest_missing_constraints
+from .computational_resource_calculator import analyze_computational_requirements
 import matplotlib.pyplot as plt
 
 # ============================================================================
