@@ -54,12 +54,26 @@ def load_system_data_from_file(system_data_file):
 
 def load_lookup_tables_from_system_data(system_module):
     # Extract lookup tables from system_data module
-    # Returns dictionary of lookup tables for compatibility
+    # Auto-detect lookup functions from equations and tensors
     
     if hasattr(system_module, 'lookup_tables'):
         return system_module.lookup_tables
-    else:
-        return {}
+    
+    # Auto-detect from equations and tensors dictionary
+    lookup_tables = {}
+    if hasattr(system_module, 'equations') and hasattr(system_module, 'tensors'):
+        import re
+        equations = system_module.equations
+        tensors = system_module.tensors
+        
+        # Find function calls like FUNC_NAME(variable) in equations
+        for eq in equations:
+            function_calls = re.findall(r'([A-Z_][A-Z0-9_]*)\(([a-z]+)', eq)
+            for func_name, var_name in function_calls:
+                if func_name in tensors:
+                    lookup_tables[func_name] = (var_name, tensors[func_name])
+    
+    return lookup_tables
 
 def update_parameters_with_data(system_data):
     # Update in-memory parameters with new system data

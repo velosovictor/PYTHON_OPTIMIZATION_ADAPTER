@@ -27,7 +27,7 @@ def count_parameters():
     # Unknown functions (state variables)
     state_params = len(unknown_funcs) * N
     
-    # Optimization variables (like k_eff)
+    # Optimization variables (control variables)
     opt_params = 0
     if discrete_parameters:
         for var_def in discrete_parameters:
@@ -169,18 +169,18 @@ def suggest_missing_constraints(degrees_of_freedom):
     print()
     
     print("📍 ENDPOINT CONSTRAINTS:")
-    print("   - Final position: x(final_time) = target_value")
-    print("   - Final velocity: v(final_time) = 0.0")
+    print("   - Final state: variable(final_time) = target_value")
+    print("   - Final derivative: d_variable(final_time) = 0.0")
     
     print("\n🎯 PATH CONSTRAINTS:")
-    print("   - Maximum position: max(x(t)) ≤ limit")
-    print("   - Smooth trajectory: minimize sum((x[t+1] - x[t])²)")
+    print("   - Maximum bounds: max(variable(t)) ≤ limit")
+    print("   - Smooth trajectory: minimize sum((variable[t+1] - variable[t])²)")
     
     print("\n⚡ CONTROL CONSTRAINTS:")
-    print("   - Constant control: k_eff(t) = constant")  
-    print("   - Smooth control: minimize sum((k_eff[t+1] - k_eff[t])²)")
+    print("   - Constant control: control_variable(t) = constant")  
+    print("   - Smooth control: minimize sum((control[t+1] - control[t])²)")
     
     print("\n🔧 OPTIMIZATION OBJECTIVES (pick the best solution):")
-    print("   - Minimize energy: minimize sum(k_eff[t] * x[t]²)")
+    print("   - Minimize energy: minimize sum(control[t] * state[t]²)")
     print("   - Minimize time: reach target as fast as possible")
-    print("   - Minimize control effort: minimize sum(k_eff[t]²)")
+    print("   - Minimize control effort: minimize sum(control[t]²)")

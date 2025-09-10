@@ -39,7 +39,7 @@ def load_equations():
         parameters[key] = sp.symbols(key, real=True)
         globals()[key] = parameters[key]
     
-    # Build additional functions (like DAMPING, etc.)
+    # Build additional functions (problem-agnostic lookup functions)
     for func_name in eq_data.get("additional_functions", []):
         globals()[func_name] = sp.Function(func_name)
     

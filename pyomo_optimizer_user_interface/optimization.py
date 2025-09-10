@@ -36,28 +36,33 @@ def create_tracking_objective(model, target_values, weights=None):
     
     return obj_expr
 
-def create_energy_minimization_objective(model, weights=None):
-    # Creates energy minimization objective
-    # Minimizes kinetic + potential energy of the system
+def create_quadratic_penalty_objective(model, weights=None):
+    # Creates quadratic penalty objective - COMPLETELY PROBLEM-AGNOSTIC!
+    # Penalizes large values of state/control variables using quadratic terms
     
     if weights is None:
-        weights = {"kinetic": 1.0, "potential": 1.0}
+        weights = {}
     
     obj_expr = 0
     
-    # Add kinetic energy: 0.5 * m * v^2
-    param_mapping = get_parameter("parameters") or {}
-    if hasattr(model, 'v') and 'm' in param_mapping:
-        m_val = param_mapping['m']
-        kinetic_weight = weights.get("kinetic", 1.0)
-        for t in model.T:
-            obj_expr += kinetic_weight * 0.5 * m_val * model.v[t]**2
+    # Add quadratic penalties for state variables
+    state_vars = [f.func.__name__ for f in unknown_funcs]
+    for state_var in state_vars:
+        if hasattr(model, state_var):
+            weight = weights.get(f"{state_var}_penalty", 1.0)
+            var_obj = getattr(model, state_var)
+            for t in model.T:
+                obj_expr += weight * var_obj[t]**2
     
-    # Add potential energy: 0.5 * k * x^2
-    if hasattr(model, 'x') and hasattr(model, 'k_eff'):
-        potential_weight = weights.get("potential", 1.0)
-        for t in model.T:
-            obj_expr += potential_weight * 0.5 * model.k_eff[t] * model.x[t]**2
+    # Add quadratic penalties for control variables
+    discrete_params = get_parameter("discrete_parameters") or []
+    control_vars = [p.get("name") for p in discrete_params if p.get("name")]
+    for control_var in control_vars:
+        if hasattr(model, control_var):
+            weight = weights.get(f"{control_var}_penalty", 1.0)
+            control_obj = getattr(model, control_var)
+            for t in model.T:
+                obj_expr += weight * control_obj[t]**2
     
     return obj_expr
 
@@ -65,33 +70,39 @@ def create_custom_objective(model, objective_str, targets=None, weights=None):
     # Creates custom objective from symbolic expression string
     # For tracking objectives, use simpler approach
     
-    if "sum((x(t) - x_target)**2" in objective_str:
+    if "_target" in str(targets) and any("target" in s for s in [objective_str]):
         # This is a tracking objective - use the tracking function instead
         return create_tracking_objective(model, targets or {}, weights or {})
     
     # For simple expressions, build manually
     obj_expr = 0
     
-    # Add position tracking term: sum((x[t] - target)^2)
-    if hasattr(model, 'x') and targets and 'x_target' in targets:
-        x_target = targets['x_target']
-        position_weight = weights.get('position_weight', 1.0) if weights else 1.0
-        for t in model.T:
-            obj_expr += position_weight * (model.x[t] - x_target)**2
+    # Add tracking terms for any target variables (problem-agnostic)
+    if targets:
+        for target_name, target_value in targets.items():
+            var_name = target_name.replace('_target', '')  # x_target -> x
+            if hasattr(model, var_name):
+                weight_name = f'{var_name}_weight'
+                var_weight = weights.get(weight_name, 1.0) if weights else 1.0
+                var_obj = getattr(model, var_name)
+                for t in model.T:
+                    obj_expr += var_weight * (var_obj[t] - target_value)**2
     
-    # Add velocity penalty term: sum(v[t]^2)
-    if hasattr(model, 'v'):
-        velocity_weight = weights.get('velocity_weight', 0.1) if weights else 0.1
-        for t in model.T:
-            obj_expr += velocity_weight * model.v[t]**2
-    
-    # Add control penalty on k_eff changes
-    if hasattr(model, 'k_eff') and len(list(model.T)) > 1:
-        control_weight = weights.get('control_penalty', 0.01) if weights else 0.01
+    # Add control smoothness penalty for any control variables (problem-agnostic)
+    if weights and 'control_penalty' in weights and len(list(model.T)) > 1:
+        control_weight = weights.get('control_penalty', 0.01)
         T_list = list(model.T)
-        for i in range(len(T_list)-1):
-            t1, t2 = T_list[i], T_list[i+1]
-            obj_expr += control_weight * (model.k_eff[t2] - model.k_eff[t1])**2
+        
+        # Find any optimization variables (controls) and penalize their changes
+        from pyomo_optimizer_user_interface.parameters import get_parameter
+        discrete_params = get_parameter("discrete_parameters") or []
+        for param_info in discrete_params:
+            var_name = param_info.get("name")
+            if var_name and hasattr(model, var_name):
+                var_obj = getattr(model, var_name)
+                for i in range(len(T_list)-1):
+                    t1, t2 = T_list[i], T_list[i+1]
+                    obj_expr += control_weight * (var_obj[t2] - var_obj[t1])**2
     
     return obj_expr
 
@@ -164,8 +175,8 @@ def add_objective_based_optimization(model, optimization_config):
     # Build objective expression based on type
     if obj_function == "tracking":
         obj_expr = create_tracking_objective(model, targets, weights)
-    elif obj_function == "energy":
-        obj_expr = create_energy_minimization_objective(model, weights)
+    elif obj_function == "quadratic_penalty":
+        obj_expr = create_quadratic_penalty_objective(model, weights)
     elif isinstance(obj_function, str):
         # Custom objective function as string
         obj_expr = create_custom_objective(model, obj_function, targets, weights)

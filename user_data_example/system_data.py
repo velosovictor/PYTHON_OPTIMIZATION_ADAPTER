@@ -61,15 +61,7 @@ parameters = {
     "k_stiff": 2000
 }
 
-# Export individual tensors for backward compatibility  
-x = tensors["x"]
-v = tensors["v"] 
-DAMPING = tensors["DAMPING"]
-
-# Lookup tables for framework compatibility
-lookup_tables = {
-    "DAMPING": ("x", tensors["DAMPING"])
-}
+# Framework will auto-detect lookup functions from equations!
 
 # ============================================================================
 # SYSTEM EQUATIONS
@@ -145,7 +137,6 @@ discrete_logic = {
 system_data = {
     **tensors,  # Unpack all tensors automatically
     "parameters": parameters,
-    "lookup_tables": lookup_tables,
     "equations": equations,
     "dt_value": dt_value,
     "final_time": final_time,
