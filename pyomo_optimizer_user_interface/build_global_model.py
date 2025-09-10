@@ -99,7 +99,7 @@ def build_global_model(equations=None):
             tensor = params_data[fname]
             if hasattr(tensor, 'attrs') and 'bounds' in tensor.attrs:
                 bounds = tensor.attrs['bounds']
-                print(f"🔧 DEBUG: Setting bounds for {fname}: {bounds}")
+                # Bounds applied
         
         if bounds:
             setattr(model, fname, Var(model.T, domain=Reals, bounds=bounds))

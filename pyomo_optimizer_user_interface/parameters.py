@@ -110,8 +110,6 @@ def initialize_with_data_folder(data_folder):
     global _loaded_parameters, _lookup_tables
     
     system_data_file = os.path.join(data_folder, "system_data.py")
-    print(f"🔧 DEBUG: Loading system_data from: {system_data_file}")
-    
     # Load system data
     _loaded_parameters = load_system_data_from_file(system_data_file)
     

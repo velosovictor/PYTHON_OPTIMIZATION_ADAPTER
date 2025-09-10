@@ -24,11 +24,8 @@ def discretize_symbolic_eq(eq, dt, unknown_funcs, t=None, discrete_parameters=No
     res = eq.lhs - eq.rhs  # Compute residual expression
 
     # Replace derivatives and functions for each unknown variable
-    print(f"🔧 DEBUG: discretization unknown_funcs: {unknown_funcs}")
     for i, f in enumerate(unknown_funcs):
-        print(f"🔧 DEBUG: Processing f[{i}]: {f}")
         if f is None:
-            print(f"🔧 ERROR: f[{i}] is None!")
             continue
         fname = f.func.__name__
         

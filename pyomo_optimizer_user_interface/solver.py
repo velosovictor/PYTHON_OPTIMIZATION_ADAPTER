@@ -52,5 +52,17 @@ def extract_solution(model, time_set):
     sol_dict = {}
     for f in unknown_funcs:
         fname = f.func.__name__
-        sol_dict[fname] = [value(getattr(model, fname)[t]) for t in time_set]
+        values = []
+        for t in time_set:
+            var = getattr(model, fname)[t]
+            try:
+                val = value(var)
+                values.append(val)
+            except ValueError as e:
+                if "No value for uninitialized" in str(e):
+                    print(f"⚠️  Warning: {fname}[{t}] uninitialized, using NaN")
+                    values.append(float('nan'))
+                else:
+                    raise e
+        sol_dict[fname] = values
     return sol_dict

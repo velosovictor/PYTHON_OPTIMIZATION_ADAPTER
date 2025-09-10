@@ -25,16 +25,12 @@ def load_equations():
     # Create unknown functions (state variables) - auto-detected from sparse tensors
     from .parameters import detect_unknown_parameters
     detected_unknowns = detect_unknown_parameters()
-    print(f"🔧 DEBUG: Detected unknowns: {detected_unknowns}")
-    
     unknown_funcs = []
     for name in detected_unknowns:
         if name:  # Skip None or empty names
             func = sp.Function(name)(t)
             unknown_funcs.append(func)
             globals()[name] = sp.Function(name)
-    
-    print(f"🔧 DEBUG: Created unknown_funcs: {[f.func.__name__ if f else 'None' for f in unknown_funcs]}")
     
     # Build parameter symbols from dictionary
     parameters = {}

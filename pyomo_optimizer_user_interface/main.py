@@ -55,16 +55,21 @@ def run(data_folder=None):
         model, tau = build_global_model()
         solve_model(model)
         
-        # Analyze optimization results
+        # Analyze optimization results and extract optimization variables
         params_data = get_all_parameters()
         optimization_config = params_data.get("optimization", {"enabled": False})
-        analyze_optimization_results(model, optimization_config)
+        optimization_results = analyze_optimization_results(model, optimization_config)
         
         # Extract solution and create dataset
         sol_dict = extract_solution(model, model.T)
         dt_value = get_parameter("dt_value")
         final_time = get_parameter("final_time")
-        ds = package_solution(tau, sol_dict, dt_value, final_time)
+        description = get_parameter("description") or "Optimization Results"
+        ds = package_solution(tau, sol_dict, dt_value, final_time, description)
+        
+        # Add optimization data to dataset attributes
+        ds.attrs['optimization_config'] = optimization_config
+        ds.attrs['optimization_results'] = optimization_results
         
         # Display results
         plot_dataset(ds)

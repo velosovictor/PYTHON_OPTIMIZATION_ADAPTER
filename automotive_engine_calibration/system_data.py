@@ -41,22 +41,24 @@ tensors["engine_rpm"] = xr.DataArray(
     attrs={"bounds": (800.0, 7000.0)}  # Typical automotive engine RPM range
 )
 
-# Engine Power tensor: fully unknown (calculated from fuel + timing)
-engine_power_data = np.full(len(time_horizon), np.nan)  # All unknown
+# Engine Power tensor: initial condition specified, rest calculated
+engine_power_data = np.full(len(time_horizon), np.nan)  # All unknown initially
+engine_power_data[0] = 20.0  # Initial condition: idle power ~20 kW
 tensors["engine_power"] = xr.DataArray(
     data=engine_power_data,
     coords={"time": time_horizon},
     dims=["time"],
-    attrs={"bounds": (0.0, 250.0)}  # 0-250 kW reasonable engine power range
+    attrs={"bounds": (0.0, 250.0), "units": "kW", "description": "Engine power output"}
 )
 
-# Fuel Consumption tensor: fully unknown (calculated from power + efficiency)
-fuel_consumption_data = np.full(len(time_horizon), np.nan)  # All unknown
+# Fuel Consumption tensor: initial condition specified, rest calculated
+fuel_consumption_data = np.full(len(time_horizon), np.nan)  # All unknown initially
+fuel_consumption_data[0] = 2.0  # Initial condition: idle consumption ~2 L/h
 tensors["fuel_consumption"] = xr.DataArray(
     data=fuel_consumption_data,
     coords={"time": time_horizon},
     dims=["time"],
-    attrs={"bounds": (0.0, 50.0)}  # 0-50 L/h reasonable fuel consumption range
+    attrs={"bounds": (0.0, 50.0), "units": "L/h", "description": "Fuel consumption rate"}
 )
 
 # Framework will auto-detect unknowns - NO coding logic here!

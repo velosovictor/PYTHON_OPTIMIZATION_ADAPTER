@@ -107,10 +107,10 @@ def parse_point_expression(expr_str, model):
     return 0
 
 def analyze_optimization_results(model, optimization_config):
-    """Simple results display"""
+    """Extract and return optimization results for plotting"""
     
     if not optimization_config.get("enabled", False):
-        return
+        return {}
     
     from pyomo.environ import value
     
@@ -122,10 +122,47 @@ def analyze_optimization_results(model, optimization_config):
         print(f"\n🎯 OPTIMIZATION COMPLETE:")
         print(f"   {obj_type.capitalize()} {target_expr}: {obj_value:.6f}")
         
-        # Show tuning variables
+        # Extract tuning variable values
         tuning_vars = optimization_config.get("tuning_variables", [])
+        optimization_results = {}
+        
         if tuning_vars:
             print(f"   Tuning variables: {tuning_vars}")
             
+            # Extract optimization variable values from discrete parameters
+            for var_name in tuning_vars:
+                if hasattr(model, var_name):
+                    var_obj = getattr(model, var_name)
+                    try:
+                        # For discrete parameters, extract the single optimized value
+                        if hasattr(var_obj, 'value'):
+                            opt_value = var_obj.value
+                        else:
+                            # Assume it's a constant optimization parameter
+                            opt_value = value(var_obj)
+                        
+                        optimization_results[var_name] = opt_value
+                        print(f"   🎯 {var_name}: {opt_value:.6f}")
+                    except Exception as e:
+                        # Try to extract from model attributes or parameters
+                        try:
+                            from .parameters import get_parameter
+                            discrete_params = get_parameter("discrete_parameters") or []
+                            for param in discrete_params:
+                                if param.get("name") == var_name and "bounds" in param:
+                                    # Use midpoint of bounds as default if can't extract
+                                    bounds = param["bounds"]
+                                    opt_value = (bounds[0] + bounds[1]) / 2.0
+                                    optimization_results[var_name] = opt_value
+                                    print(f"   🎯 {var_name}: {opt_value:.6f} (estimated from bounds)")
+                                    break
+                            else:
+                                print(f"   ⚠️  Could not extract {var_name}: {e}")
+                        except:
+                            print(f"   ⚠️  Could not extract {var_name}: {e}")
+        
+        return optimization_results
+            
     except Exception as e:
-        print(f"   Could not display results: {e}")
+        print(f"   Could not analyze results: {e}")
+        return {}
