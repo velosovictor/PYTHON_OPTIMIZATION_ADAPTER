@@ -499,44 +499,34 @@ def _plot_2d_optimization_maps(ds, opt_vars):
     performance = np.exp(-((var1_grid - var1_center)**2 + (var2_grid - var2_center)**2) / 
                         (0.1 * (var1_center**2 + var2_center**2)))
     
-    # Plot 1: 2D Contour Map
+    # Plot 1: 2D Calibration Map - NO OPTIMAL POINT MARKER!
     contour = ax1.contourf(var1_grid, var2_grid, performance, levels=20, cmap='viridis')
-    ax1.plot(var1_center, var2_center, 'r*', markersize=15, 
-            label=f'Optimal: ({var1_center:.3f}, {var2_center:.3f})')
     ax1.set_xlabel(var1_name)
     ax1.set_ylabel(var2_name)
-    ax1.set_title('2D Optimization Surface')
-    ax1.legend()
+    ax1.set_title(f'2D Calibration Map: {var1_name} vs {var2_name}')
     ax1.grid(True, alpha=0.3)
-    plt.colorbar(contour, ax=ax1, label='Objective Value')
+    plt.colorbar(contour, ax=ax1, label='Performance')
     
-    # Plot 2: 3D Surface
+    # Plot 2: 3D Calibration Surface - NO OPTIMAL POINT MARKER!
     ax2 = fig.add_subplot(2, 2, 2, projection='3d')
     surf = ax2.plot_surface(var1_grid, var2_grid, performance, cmap='viridis', alpha=0.8)
-    ax2.plot([var1_center], [var2_center], [1.0], 'r*', markersize=15)
     ax2.set_xlabel(var1_name)
     ax2.set_ylabel(var2_name)
-    ax2.set_zlabel('Objective')
-    ax2.set_title('3D Optimization Surface')
+    ax2.set_zlabel('Performance')
+    ax2.set_title(f'3D Calibration Surface: {var1_name} vs {var2_name}')
     
-    # Plot 3: Cross-sections
-    ax3.plot(var1_range, performance[len(var2_range)//2, :], 'b-', linewidth=2, 
-            label=f'{var1_name} slice')
-    ax3.axvline(var1_center, color='r', linestyle='--', alpha=0.7, label='Optimal')
+    # Plot 3: Variable 1 Profile
+    ax3.plot(var1_range, performance[len(var2_range)//2, :], 'b-', linewidth=2)
     ax3.set_xlabel(var1_name)
-    ax3.set_ylabel('Objective Value')
-    ax3.set_title(f'{var1_name} Cross-section')
-    ax3.legend()
+    ax3.set_ylabel('Performance')
+    ax3.set_title(f'{var1_name} Performance Profile')
     ax3.grid(True, alpha=0.3)
     
-    # Plot 4: Other cross-section
-    ax4.plot(var2_range, performance[:, len(var1_range)//2], 'g-', linewidth=2, 
-            label=f'{var2_name} slice')
-    ax4.axvline(var2_center, color='r', linestyle='--', alpha=0.7, label='Optimal')
+    # Plot 4: Variable 2 Profile  
+    ax4.plot(var2_range, performance[:, len(var1_range)//2], 'g-', linewidth=2)
     ax4.set_xlabel(var2_name)
-    ax4.set_ylabel('Objective Value')
-    ax4.set_title(f'{var2_name} Cross-section')
-    ax4.legend()
+    ax4.set_ylabel('Performance')
+    ax4.set_title(f'{var2_name} Performance Profile')
     ax4.grid(True, alpha=0.3)
     
     plt.tight_layout()
