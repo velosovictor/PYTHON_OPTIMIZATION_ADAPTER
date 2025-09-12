@@ -1,72 +1,24 @@
-PROPRIETARY LICENSE
+MIT License
 
-TensorOpt Framework - Advanced Tensor-Based Optimization System
-Copyright (c) 2025 Victor Veloso. All rights reserved.
+Copyright (c) 2025 Victor Veloso
 
-================================================================================
-PROPRIETARY SOFTWARE NOTICE
-================================================================================
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-This software and its associated documentation are proprietary and confidential
-intellectual property. All rights are reserved by the copyright holder.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-RESTRICTIONS:
-- NO PUBLIC USE: This software is not licensed for public use or distribution
-- NO MODIFICATION: Unauthorized modification of this software is prohibited  
-- NO REDISTRIBUTION: Redistribution in any form is strictly forbidden
-- NO REVERSE ENGINEERING: Decompilation or reverse engineering is prohibited
-- PRIVATE DEVELOPMENT: Currently in private development phase
-
-ACCESS LIMITATIONS:
-This software is provided solely for evaluation, development, and authorized 
-collaboration purposes. Any unauthorized use, copying, distribution, or 
-disclosure is strictly prohibited and may result in legal action.
-
-INTELLECTUAL PROPERTY PROTECTION:
-This software contains proprietary algorithms, methodologies, and innovations
-subject to:
-- Trade secret protection
-- Pending patent applications  
-- Copyright protection
-- Confidential business information
-
-PERMITTED ACTIVITIES (Authorized Users Only):
-- Internal evaluation and testing
-- Collaborative development under signed agreements
-- Academic research under approved partnerships
-- Authorized pilot implementations
-
-PROHIBITED ACTIVITIES:
-- Public distribution or open-source release
-- Commercial use without explicit license
-- Sharing with unauthorized third parties
-- Publication of proprietary algorithms or methods
-- Creation of derivative works
-
-FUTURE LICENSING:
-Licensing opportunities may be available in the future. For inquiries regarding:
-- Commercial licensing
-- Academic partnerships  
-- Collaboration agreements
-- Technology transfer
-
-Contact: [Licensing contact information to be provided]
-
-LIABILITY DISCLAIMER:
-THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED. THE COPYRIGHT HOLDER SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING
-FROM THE USE OF THIS SOFTWARE.
-
-VIOLATION CONSEQUENCES:
-Unauthorized use of this software may result in:
-- Immediate termination of access
-- Legal action for intellectual property infringement  
-- Monetary damages and injunctive relief
-- Criminal prosecution where applicable
-
-================================================================================
-AUTHORIZED DEVELOPMENT TEAM USE ONLY
-================================================================================
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ================================================================================
 THIRD-PARTY LIBRARIES AND ACKNOWLEDGMENTS
@@ -113,7 +65,7 @@ License: BSD 3-Clause License
 Homepage: https://github.com/giampaolo/psutil
 
 ================================================================================
-DISCLAIMER
+DISCLAIMER FOR THIRD-PARTY SOLVERS
 ================================================================================
 
 This software is designed to interface with optimization solvers including SCIP.
@@ -122,4 +74,39 @@ Users are responsible for:
 - Complying with all applicable licenses of third-party dependencies  
 - Understanding that this software does not include or redistribute SCIP binaries
 
-For commercial use, please verify all licensing requirements independently.
+For commercial use of SCIP, please verify licensing requirements independently at:
+https://scipopt.org/index.php#license
+
+================================================================================
+OPEN SOURCE COMMITMENT
+================================================================================
+
+This project is committed to open source development and welcomes contributions
+from the optimization community. By making this framework open source, we aim to:
+
+- Accelerate innovation in engineering optimization
+- Foster collaboration between academia and industry
+- Provide accessible tools for researchers and practitioners
+- Build a strong community around tensor-based optimization
+
+We believe that open source development leads to better, more reliable software
+and enables breakthrough applications that benefit everyone.
+
+================================================================================
+COMMERCIAL SUPPORT AND CONSULTING
+================================================================================
+
+While this software is freely available under the MIT License, commercial support,
+custom development, and consulting services are available for organizations that
+need additional assistance with:
+
+- Custom optimization model development
+- Integration with existing engineering workflows
+- Performance optimization for large-scale problems
+- Training and knowledge transfer
+- Domain-specific optimization solutions
+
+Contact information for commercial support will be provided in the project
+documentation and website.
+
+================================================================================
